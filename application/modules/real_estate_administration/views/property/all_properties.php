@@ -15,6 +15,7 @@
 						<th>#</th>
 						<th><a>Property Name</a></th>
 						<th><a >Property Location</a></th>
+						<th><a >Property Type</a></th>
 						<th><a >Status</a></th>
 						<th colspan="5">Actions</th>
 					</tr>
@@ -28,7 +29,8 @@
 			{
 				$property_id = $row->property_id;
 				$property_name = $row->property_name;
-				$property_location = $row->property_location;
+				$property_type_name = $row->property_type_name;
+				$property_location = $row->location_name;
 				$created = $row->created;
 				$property_status = $row->property_status;
 				
@@ -63,6 +65,7 @@
 						<td>'.$count.'</td>
 						<td>'.$property_name.'</td>
 						<td>'.$property_location.'</td>
+						<td>'.$property_type_name.'</td>
 						<td>'.$status.'</td>
 						<td><a  class="btn btn-sm btn-primary" ><i class="fa fa-folder"></i> Property Detail</a></td>
 						<td><a href="'.site_url().'rental-units/'.$property_id.'" class="btn btn-sm btn-warning" ><i class="fa fa-folder"></i> Rental Units</a></td>

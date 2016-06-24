@@ -10,7 +10,6 @@ class Auth extends MX_Controller
 	
 	public function index()
 	{
-		var_dump("dasdada");die();
 		if(!$this->auth_model->check_login())
 		{
 			redirect('login');

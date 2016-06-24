@@ -29,8 +29,8 @@ class Property extends admin {
 	*/
 	public function index() 
 	{
-		$where = 'property_id > 0';
-		$table = 'property';
+		$where = 'property.location_id = location.location_id AND property.property_type_id = property_type.property_type_id';
+		$table = 'property, property_type, location';
 		$segment = 3;
 		//pagination
 		$this->load->library('pagination');
@@ -84,42 +84,92 @@ class Property extends admin {
 	
 	function add_property()
 	{
-		
-		$property_error = $this->session->userdata('property_error_message');
-		
 		$this->form_validation->set_rules('property_name', 'property name', 'required|xss_clean|trim|xss_clean');
 		$this->form_validation->set_rules('property_prefix', 'property name', 'required|xss_clean|is_unique[property.property_prefix]|trim|xss_clean');
-		$this->form_validation->set_rules('property_location', 'property location', 'required|xss_clean|trim|xss_clean');
-
+		$this->form_validation->set_rules('property_status', 'Property Status', 'xss_clean');
+		$this->form_validation->set_rules('location_id', 'Location', 'xss_clean');
+		$this->form_validation->set_rules('property_type_id', 'Property Type', 'xss_clean');
+		$this->form_validation->set_rules('latitude', 'Latitude', 'xss_clean');
+		$this->form_validation->set_rules('longitude', 'Longitude', 'xss_clean');
+		$this->form_validation->set_rules('property_land_size', 'Property Land Size', 'xss_clean');
+		$this->form_validation->set_rules('property_description', 'Property Description', 'trim|xss_clean');
+		$this->form_validation->set_rules('total_units', 'Total Units', 'trim|xss_clean');
 		if ($this->form_validation->run())
 		{	
-			if(empty($property_error))
-			{
-				$data2 = array(
-					'property_name'=>$this->input->post("property_name"),
-					'property_location'=>$this->input->post("property_location"),
-					'property_prefix'=>ucwords(strtoupper($this->input->post('property_prefix'))),
-					'property_status'=>1,
-					'property_owner_id'=>$this->input->post("property_owner_id"),
-					'total_units'=>$this->input->post("total_units")
+			$data2 = array(
+				'property_name'=>$this->input->post("property_name"),
+				'property_status'=>$this->input->post("property_status"),
+				'property_prefix'=>ucwords(strtoupper($this->input->post('property_prefix'))),
+				'location_id'=>$this->input->post("location_id"),
+				'property_type_id'=>$this->input->post("property_type_id"),
+				'latitude'=>$this->input->post("latitude"),
+				'longitude'=>$this->input->post("longitude"),
+				'property_land_size'=>$this->input->post("property_land_size"),
+				'property_description'=>$this->input->post("property_description"),
+				'total_units'=>$this->input->post("total_units")
+			);
+			
+			//  add property 
+			$table = "property";
+			$this->db->insert($table, $data2);
 
-				);
-				
-				//  add property 
-				$table = "property";
-				$this->db->insert($table, $data2);
+			$property_id = $this->db->insert_id();
 
-				$property_id = $this->db->insert_id();
+			// $this->create_property_units($property_id,$this->input->post("total_units"));
 
-				// $this->create_property_units($property_id,$this->input->post("total_units"));
-
-				$this->session->unset_userdata('property_error_message');
-				$this->session->set_userdata('success_message', 'property has been added');
-				
-				redirect('real-estate-administration/properties');
-			}
+			$this->session->unset_userdata('property_error_message');
+			$this->session->set_userdata('success_message', 'property has been added');
+			
+			redirect('real-estate-administration/properties');
 		}
-		$v_data['property_owners'] = $this->property_owners_model->get_all_front_end_property_owners();
+		
+		$property_type_query = $this->property_model->get_all_active_property_type();
+		if($property_type_query->num_rows > 0)
+		{
+			$property_types = '<select class="form-control" name="property_type_id">';
+			
+			foreach($property_type_query->result() as $res)
+			{
+				$property_types .= '<option value="'.$res->property_type_id.'">'.$res->property_type_name.'</option>';
+			}
+			$property_types .= '</select>';
+			
+			
+		}
+		
+		else
+		{
+			$property_types = '<select class="form-control" name="property_type_id">';
+			
+				$property_types .= '<option value="0">No property types</option>';
+			
+			$property_types .= '</select>';
+		}
+		
+		$location_query = $this->property_model->get_all_active_locations();
+		if($location_query->num_rows > 0)
+		{
+			$locations = '<select class="form-control" name="location_id">';
+			
+			foreach($location_query->result() as $res_location)
+			{
+				$locations .= '<option value="'.$res_location->location_id.'">'.$res_location->location_name.'</option>';
+			}
+			$locations .= '</select>';
+			
+			
+		}
+		
+		else
+		{
+			$locations = '<select class="form-control" name="location_id">';
+			
+				$locations .= '<option value="0">No locations</option>';
+			
+			$locations .= '</select>';
+		}
+		$v_data['property_types'] = $property_types;
+		$v_data['locations'] = $locations;
 		$v_data['title'] = 'Add property';
 		$data['title'] = 'Add property';
 		$data['content'] = $this->load->view("property/add_property", $v_data, TRUE);
@@ -202,48 +252,113 @@ class Property extends admin {
 		return TRUE;
 
 	}
-	function edit_property($property_id, $page = NULL)
+	function edit_property($property_id)
 	{
-		//get property data
-		$table = "property, property_owners";
-		$where = "property_owners.property_owner_id = property.property_owner_id AND property.property_id = ".$property_id;
-		
-		$this->db->where($where);
-		$property_query = $this->db->get($table);
-		$property_row = $property_query->row();
-		$v_data['property_row'] = $property_row;		
-		$v_data['property_owners'] = $this->property_owners_model->get_all_front_end_property_owners();
-		
-		$this->form_validation->set_rules('property_name', 'property name', 'trim|xss_clean');
-		$this->form_validation->set_rules('property_location', 'property location', 'trim|xss_clean');
+		$this->form_validation->set_rules('property_name', 'property name', 'required|xss_clean|trim|xss_clean');
+		$this->form_validation->set_rules('property_prefix', 'property name', 'required|xss_clean|is_unique[property.property_prefix]|trim|xss_clean');
+		$this->form_validation->set_rules('property_status', 'Property Status', 'xss_clean');
+		$this->form_validation->set_rules('location_id', 'Location', 'xss_clean');
+		$this->form_validation->set_rules('property_type_id', 'Property Type', 'xss_clean');
+		$this->form_validation->set_rules('latitude', 'Latitude', 'xss_clean');
+		$this->form_validation->set_rules('longitude', 'Longitude', 'xss_clean');
+		$this->form_validation->set_rules('property_land_size', 'Property Land Size', 'xss_clean');
+		$this->form_validation->set_rules('property_description', 'Property Description', 'trim|xss_clean');
+		$this->form_validation->set_rules('total_units', 'Total Units', 'trim|xss_clean');
 
 		if ($this->form_validation->run())
 		{	
-			if(empty($property_error))
-			{
+			$data2 = array(
+				'property_name'=>$this->input->post("property_name"),
+				'property_status'=>$this->input->post("property_status"),
+				'property_prefix'=>ucwords(strtoupper($this->input->post('property_prefix'))),
+				'location_id'=>$this->input->post("location_id"),
+				'property_type_id'=>$this->input->post("property_type_id"),
+				'latitude'=>$this->input->post("latitude"),
+				'longitude'=>$this->input->post("longitude"),
+				'property_land_size'=>$this->input->post("property_land_size"),
+				'property_description'=>$this->input->post("property_description"),
+				'total_units'=>$this->input->post("total_units")
+			);
+				
+			$table = "property";
+			$this->db->where('property_id', $property_id);
+			$this->db->update($table, $data2);
+			$this->session->set_userdata('success_message', 'property has been edited');
+			
+			redirect('real-estate-administration/properties/');
+		}
+		$property_details = $this->property_model->get_property($property_id);
 		
-				$data2 = array(
-					'property_name'=>$this->input->post("property_name"),
-					'property_location'=>$this->input->post("property_location"),
-					'property_status'=>1,
-					'property_owner_id'=>$this->input->post("property_owner_id")
-				);
+		$property_row = $property_details->row();
+		$location_id = $property_row->location_id;
+		$property_type_id = $property_row->property_type_id;
+		
+		$property_type_query = $this->property_model->get_all_active_property_type();
+		if($property_type_query->num_rows > 0)
+		{
+			$property_types = '<select class="form-control" name="property_type_id">';
+			
+			foreach($property_type_query->result() as $res)
+			{
+				if($property_type_id == $res->property_type_id)
+				{
+					$property_types .= '<option value="'.$res->property_type_id.'" selected="selected">'.$res->property_type_name.'</option>';
+				}
 				
-				$table = "property";
-				$this->db->where('property_id', $property_id);
-				$this->db->update($table, $data2);
-				$this->session->set_userdata('success_message', 'property has been edited');
-				
-				redirect('real-estate-administration/properties/'.$page);
+				else
+				{
+					$property_types .= '<option value="'.$res->property_type_id.'">'.$res->property_type_name.'</option>';
+				}
 			}
+			$property_types .= '</select>';
+			
+			
 		}
 		
-		$property = $this->session->userdata('property_file_name');
+		else
+		{
+			$property_types = '<select class="form-control" name="property_type_id">';
+			
+				$property_types .= '<option value="0">No property types</option>';
+			
+			$property_types .= '</select>';
+		}
 		
+		$location_query = $this->property_model->get_all_active_locations();
+		if($location_query->num_rows > 0)
+		{
+			$locations = '<select class="form-control" name="location_id">';
+			
+			foreach($location_query->result() as $res)
+			{
+				if($location_id == $res->location_id)
+				{
+					$locations .= '<option value="'.$res->location_id.'" selected="selected">'.$res->location_name.'</option>';
+				}
+				
+				else
+				{
+					$locations .= '<option value="'.$res->location_id.'">'.$res->location_name.'</option>';
+				}
+			}
+			$locations .= '</select>';
+			
+			
+		}
 		
-		
+		else
+		{
+			$locations = '<select class="form-control" name="location_id">';
+			
+				$locations .= '<option value="0">No locations</option>';
+			
+			$locations .= '</select>';
+		}
+		$v_data['property_types'] = $property_types;
+		$v_data['property_details'] = $property_details;
+		$v_data['locations'] = $locations;
+		$v_data['title'] = $data['title'] = 'Edit Property';
 		$data['content'] = $this->load->view("property/edit_property", $v_data, TRUE);
-		$data['title'] = 'Edit property';
 		
 		$this->load->view('admin/templates/general_page', $data);
 	}

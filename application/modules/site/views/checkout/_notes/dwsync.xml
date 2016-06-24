@@ -10,4 +10,14 @@
 <file name="order_steps.php" server="148.251.2.43/public_html/clothes/" local="130519919227667056" remote="130520576400000000" Dst="0" />
 <file name="payment.php" server="148.251.2.43/public_html/clothes/" local="130519947626251362" remote="130520576400000000" Dst="0" />
 <file name="reset_password.php" server="148.251.2.43/public_html/clothes/" local="130519901058297828" remote="130520576400000000" Dst="0" />
+<file name="checkout.php" server="101.0.112.4/public_html/development/" local="130627774642582033" remote="130637370000000000" Dst="0" />
+<file name="checkout_header.php" server="101.0.112.4/public_html/development/" local="130627774642592034" remote="130637370000000000" Dst="0" />
+<file name="confirm_message.php" server="101.0.112.4/public_html/development/" local="130627774642612035" remote="130637370000000000" Dst="0" />
+<file name="my_details.php" server="101.0.112.4/public_html/development/" local="130627774642652037" remote="130637370000000000" Dst="0" />
+<file name="delivery.php" server="101.0.112.4/public_html/development/" local="130627774642632036" remote="130637370000000000" Dst="0" />
+<file name="error_message.php" server="101.0.112.4/public_html/development/" local="130627774642642036" remote="130637370000000000" Dst="0" />
+<file name="order.php" server="101.0.112.4/public_html/development/" local="130627774642672038" remote="130637370000000000" Dst="0" />
+<file name="order_steps.php" server="101.0.112.4/public_html/development/" local="130627774642682039" remote="130637370000000000" Dst="0" />
+<file name="payment.php" server="101.0.112.4/public_html/development/" local="130627774642702040" remote="130637370000000000" Dst="0" />
+<file name="reset_password.php" server="101.0.112.4/public_html/development/" local="130627774642712040" remote="130637370000000000" Dst="0" />
 </dwsync>

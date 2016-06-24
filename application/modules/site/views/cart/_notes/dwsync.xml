@@ -6,4 +6,10 @@
 <file name="cart_footer.php" server="148.251.2.43/public_html/clothes/" local="130519799773844688" remote="130520576400000000" Dst="0" />
 <file name="cart_summary.php" server="148.251.2.43/public_html/clothes/" local="130519915601869672" remote="130520576400000000" Dst="0" />
 <file name="view_cart.php" server="148.251.2.43/public_html/clothes/" local="130519951108070511" remote="130520576400000000" Dst="0" />
+<file name="cart_footer.php" server="101.0.112.4/public_html/development/" local="130627774642462026" remote="130637369400000000" Dst="0" />
+<file name="cart_summary.php" server="101.0.112.4/public_html/development/" local="130627774642482027" remote="130637369400000000" Dst="0" />
+<file name="cart_total.php" server="101.0.112.4/public_html/development/" local="130627774642502028" remote="130637369400000000" Dst="0" />
+<file name="menu_cart.php" server="101.0.112.4/public_html/development/" local="130627774642512029" remote="130637369400000000" Dst="0" />
+<file name="mini_cart.php" server="101.0.112.4/public_html/development/" local="130627774642522030" remote="130637369400000000" Dst="0" />
+<file name="view_cart.php" server="101.0.112.4/public_html/development/" local="130627774642542031" remote="130637370000000000" Dst="0" />
 </dwsync>

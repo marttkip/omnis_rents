@@ -14,9 +14,12 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th><a>Rental Unit Name</a></th>
-						<th><a>Status</a></th>
-						<th><a>Tenancy Status</a></th>
+						<th>Property Name</th>
+						<th>Rental Unit Name</th>
+						<th>Location</th>
+						<th>Date Created</th>
+						<th>Last Modified</th>
+						<th>Status</th>
 						<th colspan="5">Actions</th>
 					</tr>
 				</thead>
@@ -28,9 +31,10 @@
 			foreach ($query->result() as $row)
 			{
 				$rental_unit_id = $row->rental_unit_id;
+				$property_name = $row->property_name;
 				$rental_unit_name = $row->rental_unit_name;
 				$rental_unit_price = $row->rental_unit_price;
-				$created = $row->created;
+				$created = $row->created_on;
 				$rental_unit_status = $row->rental_unit_status;
 				
 				//status
@@ -41,21 +45,6 @@
 				else
 				{
 					$status = 'Disabled';
-				}
-				
-				// get tenancy status 
-
-				$tenancy_query = $this->rental_unit_model->get_tenancy_details($rental_unit_id);
-
-				if($tenancy_query->num_rows() > 0)
-				{
-
-					$tenancy_status = '<span class="label label-success"> Occupied </span>';
-				}
-				else
-				{
-					$tenancy_status = '<span class="label label-warning"> Vacant </span>';
-					
 				}
 
 				//create deactivated status display
@@ -77,12 +66,12 @@
 				'
 					<tr>
 						<td>'.$count.'</td>
+						<td>'.$property_name.'</td>
 						<td>'.$rental_unit_name.'</td>
 						<td>'.$status.'</td>
-						<td>'.$tenancy_status.'</td>
-						<td><a  class="btn btn-sm btn-primary" ><i class="fa fa-folder"></i> Rental unit Detail</a></td>
+						<td><a href="'.site_url().'sub-units/'.$rental_unit_id.'" class="btn btn-sm btn-primary" ><i class="fa fa-folder"></i> Sub Units</a></td>
 						<td><a href="'.site_url().'tenants/'.$rental_unit_id.'" class="btn btn-sm btn-warning" ><i class="fa fa-folder"></i> Tenants Detail</a></td>
-						<td><a href="'.site_url().'edit-rental-unit/'.$rental_unit_id.'" class="btn btn-sm btn-success" title="Edit '.$rental_unit_name.'"><i class="fa fa-pencil"></i></a></td>
+						<td><a href="'.site_url().'edit-rental-unit/'.$rental_unit_id.'/'.$property_id.'" class="btn btn-sm btn-success" title="Edit '.$rental_unit_name.'"><i class="fa fa-pencil"></i></a></td>
 						<td>'.$button.'</td>
 						<td><a href="'.site_url().'deactivate-rental-unit/'.$rental_unit_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$rental_unit_name.'?\');" title="Delete '.$rental_unit_name.'"><i class="fa fa-trash"></i></a></td>
 					</tr> 
@@ -104,9 +93,17 @@
 
 						<section class="panel">
 							<header class="panel-heading">						
-								<h2 class="panel-title"><?php echo $title;?> <div class="pull-right" ><a href="<?php echo site_url();?>real-estate-administration/add-rental-unit" style="margin-top:-5px" class="btn btn-sm btn-info "><i class="fa fa-plus"></i> Add rental unit</a></div></h2>
+								<h2 class="panel-title"><?php echo $title;?></h2>
 							</header>
 							<div class="panel-body">
+                            	<div class="row" style="margin-bottom:20px;">
+                                    <div class="col-lg-2 col-lg-offset-8">
+                                    	<a href="<?php echo site_url();?>real-estate-administration/properties" class="btn btn-primary pull-right btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+                                    </div>
+                                    <div class="col-lg-2">
+                                    	<a href="<?php echo site_url();?>add-rental-unit/<?php echo $property_id;?>" class="btn btn-info pull-right btn-sm"><i class="fa fa-plus"></i> Add Rental Unit</a>
+                                    </div>
+                                </div>
                             	<?php
                                 $success = $this->session->userdata('success_message');
 		

@@ -314,7 +314,7 @@ class File_model extends CI_Model
                 }
                 else
                 {
-					if($this->products_model->save_gallery_file($product_id, $file_name, 'thumb_'.$file_name))
+					if($this->rental_unit_model->save_gallery_file($product_id, $file_name, 'thumb_'.$file_name))
 					{
 						// otherwise, put each upload data to an array.
 						$success[] = $upload_data;
@@ -501,6 +501,39 @@ class File_model extends CI_Model
 					$response['error'] =  $this->image_lib->display_errors();
 				}
 			}
+		}
+		
+        unset($_FILES[$field_name]);
+		return $response;
+	}
+	public function upload_downloadable_file($upload_path, $field_name)
+	{
+		$config = array(
+				'allowed_types'	=> 'pdf|PDF',
+				'upload_path' => $upload_path,
+				'file_name' => md5(date('Y-m-d H:i:s'))
+			);
+			
+		$this->load->library('upload');
+		$this->upload->initialize($config); 
+		
+		if ( ! $this->upload->do_upload($field_name))
+		{
+			// if upload fail, grab error
+			$response['check'] = FALSE;
+			$response['error'] =  $this->upload->display_errors();
+		}
+		
+		else
+		{
+			// otherwise, put the upload datas here.
+			// if you want to use database, put insert query in this loop
+			$image_upload_data = $this->upload->data();
+			
+			$file_name = $image_upload_data['file_name'];
+			
+			$response['check'] = TRUE;
+			$response['file_name'] =  $file_name;
 		}
 		
         unset($_FILES[$field_name]);

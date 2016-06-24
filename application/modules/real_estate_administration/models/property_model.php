@@ -166,4 +166,31 @@ class Property_model extends CI_Model
 			return FALSE;
 		}
 	}
+	public function get_property($property_id)
+	{
+		$table = "property";
+		$where = "property_id = ".$property_id;
+		
+		$this->db->where($where);
+		$query = $this->db->get($table);
+		return $query;
+	}
+	public function get_all_active_property_type()
+	{
+		$this->db->where('property_type_status = 1');
+		$this->db->order_by('property_type_name');
+		$query = $this->db->get('property_type');
+		
+		return $query;
+
+	}
+	public function get_all_active_locations()
+	{
+		$this->db->where('location_status = 1');
+		$this->db->order_by('location_name');
+		$query = $this->db->get('location');
+		
+		return $query;
+
+	}
 }

@@ -4,4 +4,8 @@
 <file name="my_details.php" server="148.251.2.43/public_html/clothes/" local="130520548639341238" remote="130520577000000000" Dst="0" />
 <file name="orders_list.php" server="148.251.2.43/public_html/clothes/" local="130520507213101793" remote="130520577000000000" Dst="0" />
 <file name="wishlist.php" server="148.251.2.43/public_html/clothes/" local="130520566778178720" remote="130520577000000000" Dst="0" />
+<file name="my_account.php" server="101.0.112.4/public_html/development/" local="130627774645922224" remote="130637370600000000" Dst="0" />
+<file name="my_details.php" server="101.0.112.4/public_html/development/" local="130627774645932225" remote="130637370600000000" Dst="0" />
+<file name="orders_list.php" server="101.0.112.4/public_html/development/" local="130627774646032230" remote="130637370600000000" Dst="0" />
+<file name="wishlist.php" server="101.0.112.4/public_html/development/" local="130627774646052232" remote="130637370600000000" Dst="0" />
 </dwsync>

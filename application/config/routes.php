@@ -590,13 +590,11 @@ $route['import-water-readings-template'] = 'water_management/import_water_readin
 $route['import-water-readings'] = 'water_management/do_water_readings_import';
 $route['print-water-readings/(:any)'] = 'water_management/print_water_readings/$1';
 
-
-$route['rental-units/(:num)'] = 'real_estate_administration/rental_unit/index/$1';
 $route['rental-units/(:num)'] = 'real_estate_administration/rental_unit/index/$1';
 $route['rental-units/(:any)/(:any)/(:num)'] = 'real_estate_administration/rental_unit/index/$1/$2/$3';
 $route['rental-units/(:any)/(:any)'] = 'real_estate_administration/rental_unit/index/$1/$2';
 $route['add-unit'] = 'real_estate_administration/rental_unit/add_unit';
-$route['edit-rental-unit/(:num)'] = 'real_estate_administration/rental_unit/edit_rental_unit/$1';
+$route['add-rental-unit/(:num)'] = 'real_estate_administration/rental_unit/add_rental_unit/$1';
 $route['edit-rental-unit/(:num)/(:num)'] = 'real_estate_administration/rental_unit/edit_rental_unit/$1/$2';
 $route['real-estate-administration/delete-unit/(:num)'] = 'real_estate_administration/rental_unit/delete_unit/$1';
 $route['real-estate-administration/delete-unit/(:num)/(:num)'] = 'real_estate_administration/rental_unit/delete_unit/$1/$2';
@@ -607,11 +605,14 @@ $route['deactivate--rental-unit/(:num)/(:num)'] = 'real_estate_administration/re
 $route['rental-management/rental-units'] = 'real_estate_administration/rental_unit/rental_units';
 $route['rental-management/rental-units/(:num)'] = 'real_estate_administration/rental_unit/rental_units/$1';
 $route['add-rental-unit'] = 'real_estate_administration/rental_unit/add_rental_unit';
-
 $route['search-rental-units'] = 'real_estate_administration/rental_unit/search_rental_units';
 $route['close_search_rental_units'] = 'real_estate_administration/rental_unit/close_tenants_search';
-
-
+$route['sub-units/(:num)'] = 'real_estate_administration/sub_units/index/$1';
+$route['add-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/add_units/$1/$2';
+$route['edit-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/edit_units/$1/$2';
+$route['deactivate-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/deactivate_units/$1/$2';
+$route['activate-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/activate_units/$1/$2';
+$route['delete-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/delete_units/$1/$2';
 
 $route['tenants'] = 'real_estate_administration/tenants/index';
 $route['tenants/(:num)'] = 'real_estate_administration/tenants/all_tenants/$1';
@@ -674,6 +675,31 @@ $route['activate-points-category/(:num)/(:num)'] = 'real_estate_administration/p
 $route['deactivate-points-category/(:num)'] = 'real_estate_administration/points_category/deactivate_points_category/$1';
 $route['deactivate-points-category/(:num)/(:num)'] = 'real_estate_administration/points_category/deactivate_points_category/$1/$2';
 
+/*
+*	Site Routes
+*/
 
-
-
+$route['home'] = 'site/home_page';
+$route['properties'] = 'site/property';
+$route['properties/(:num)'] = 'site/property/$1';
+$route['properties/for-sale'] = 'site/property_onsale';
+$route['properties/for-sale/(:num)'] = 'site/property_onsale/$1';
+$route['properties/sold'] = 'site/property_sold';
+$route['properties/sold/(:num)'] = 'site/property_sold/$1';
+$route['properties/view-single/(:num)'] = 'site/property_detail/$1';
+$route['print-brochure/(:num)'] = 'site/brochure/$1';
+$route['request'] = 'site/contact';
+$route['development'] = 'site/development';
+$route['contact'] = 'site/contact';
+$route['news'] = 'site/blog';
+$route['news/(:num)'] = 'site/blog/$1';
+$route['news/view-single/(:num)'] = 'site/blog_detail/$1';
+$route['about'] = 'site/about';
+$route['service/(:num)'] = 'site/service/$1';
+$route['search-properties'] = 'site/search_properties/1';
+$route['search-properties-sold'] = 'site/search_properties/2';
+$route['close-search'] = 'site/close_property_search';
+$route['request-news-letter'] = 'site/request_newsletter';
+$route['send-message'] = 'site/contact_us';
+$route['request-an-appraisal'] = 'site/request_appraisal';
+$route['blog/add-comment/(:num)'] = 'site/add_blog_comment/$1';

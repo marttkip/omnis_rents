@@ -33,27 +33,24 @@ class Email_model extends CI_Model
 	* 	@param string $shopping
 	*	@param string $from
 	* 	@param string $button
-	* 	@param string $cc
 	*
 	*/
-	function send_mandrill_mail($user_email, $user_name, $subject, $message, $sender_email = NULL, $shopping = NULL, $from = NULL, $button = NULL, $cc = NULL)
+	function send_mandrill_mail($user_email, $user_name, $subject, $message, $sender_email = NULL, $shopping = NULL, $from = NULL, $button = NULL)
 	{
 		if(!isset($sender_email)){
-			$sender_email = "info@dobi.co.ke";
+			$sender_email = "brynhaggarty@gmail.com";
 		}
 		if(!isset($shopping)){
 			$shopping = "";
 		}
 		if(!isset($from)){
-			$from = "Dobi";
+			$from = "In Store Look";
 		}
-		
 		if(!isset($button)){
-			//$button = '<a class="mcnButton " title="Confirm Account" href="http://www.intorelook.com.au" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Shop Now</a>';
-			$button = '';
+			$button = '<a class="mcnButton " title="Confirm Account" href="http://www.intorelook.com.au" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Shop Now</a>';
 		}
 		
-		$template_name = 'dobi';
+		$template_name = 'basic';
 		$template_content = array(
 			array(
 				'name' => 'salutation',
@@ -95,7 +92,7 @@ class Email_model extends CI_Model
 		'url_strip_qs' => null,
 		'preserve_recipients' => null,
 		'view_content_link' => null,
-		'bcc_address' => $cc,
+		'bcc_address' => null,
 		'tracking_domain' => null,
 		'signing_domain' => null,
 		'return_path_domain' => null,
@@ -117,11 +114,11 @@ class Email_model extends CI_Model
 				)
 			)
 		),
-		'tags' => array('mandrill-mail'),
+		'tags' => array('password-resets'),
 		'subaccount' => NULL, //'customer-123',
-		'google_analytics_domains' => array('www.privatebushflights.com'),
-		'google_analytics_campaign' => 'alvaromasitsa104@gmail.com',
-		'metadata' => array('website' => 'www.privatebushflights.com'),
+		'google_analytics_domains' => array('www.instorelook.com.au'),
+		'google_analytics_campaign' => 'alvaromasitsa104@@gmail.com',
+		'metadata' => array('website' => 'www.instorelook.com.au'),
 		'recipient_metadata' => array(
 			array(
 				'rcpt' => $sender_email,

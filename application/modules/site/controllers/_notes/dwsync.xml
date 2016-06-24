@@ -4,5 +4,8 @@
 <file name="cart.php" server="148.251.2.43/public_html/clothes/" local="130519823418617092" remote="130520893800000000" Dst="0" />
 <file name="account.php" server="148.251.2.43/public_html/clothes/" local="130520571059183580" remote="130520575200000000" Dst="0" />
 <file name="checkout.php" server="148.251.2.43/public_html/clothes/" local="130520442061015307" remote="130520575800000000" Dst="0" />
-<file name="site.php" server="autospares.co.ke/public_html/development/" local="130821170867401060" remote="130821171600000000" Dst="0" />
+<file name="account.php" server="101.0.112.4/public_html/development/" local="130627774642202011" remote="130637369400000000" Dst="0" />
+<file name="cart.php" server="101.0.112.4/public_html/development/" local="130627774642222012" remote="130637369400000000" Dst="0" />
+<file name="checkout.php" server="101.0.112.4/public_html/development/" local="130627774642242014" remote="130637369400000000" Dst="0" />
+<file name="site.php" server="101.0.112.4/public_html/development/" local="130675436982940688" remote="130675725000000000" Dst="0" />
 </dwsync>
