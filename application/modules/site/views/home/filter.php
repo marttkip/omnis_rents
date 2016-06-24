@@ -27,7 +27,7 @@ else
 
 
 // property type
-$property_type_query = $this->property_model->get_all_active_property_type();
+$property_type_query = $this->site_model->get_property_types();
 if($property_type_query->num_rows > 0)
 {
     $property_types = '<select class="selectpicker show-menu-arrow show-tick" data-live-search="true" data-width="100%" name="property_type_id">

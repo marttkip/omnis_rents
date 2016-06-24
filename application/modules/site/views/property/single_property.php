@@ -276,19 +276,12 @@ if(!isset($brochure))
             </div>
             
             <div class="row" style="margin-top:20px;">
-            	<div class="col-md-6">
-                	<a href="<?php echo site_url().'about'?>"><img src="<?php echo base_url();?>assets/themes/realta/img/preview/agents/Portrait Dad.jpg" class="img-responsive" alt="" style="max-height:200px"></a>
-                    <ul class="fa-ul-icons">
-                        <li><i class="fa fa-phone"></i><a href="tel:0414639738">0414 639 738</a></li>
-                        <li><i class="fa fa-envelope-o"></i><a href="mailto:i.haggarty@wsfn.com.au">i.haggarty@wsfn.com.au</a></li>
-                    </ul>
-                </div>
-            	<div class="col-md-6">
-                    <a href="<?php echo site_url().'about'?>"><img src="<?php echo base_url();?>assets/themes/realta/img/preview/agents/Portrait Scott.jpg" class="img-responsive" alt="" style="max-height:200px"></a>
-                    <ul class="fa-ul-icons">
-                        <li><i class="fa fa-phone"></i><a href="tel:0414072084">0414 072 084</a></li>
-                        <li><i class="fa fa-envelope-o"></i><a href="mailto:s.haggarty@wsfn.com.au">s.haggarty@wsfn.com.au</a></li>
-                    </ul>
+            	<div class="col-md-12">
+                	<div class="agent-info">
+                        <img alt="" src="http://0.gravatar.com/avatar/40b602e6564375ffd02925dd8a94af99?s=24&amp;d=http%3A%2F%2F0.gravatar.com%2Favatar%2Fad516503a11cd5ca435acc9bb6523536%3Fs%3D24&amp;r=G" class="avatar avatar-24 photo" height="24" width="24">			<label><span>Agent:</span> Alvaro Masitsa</label>
+                        
+                        <a href="<?php echo base_url();?>contact" class="view-profile">Contact</a>
+                    </div>
                 </div>
             </div>
         </div><!-- end map -->

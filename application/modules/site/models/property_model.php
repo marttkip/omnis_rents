@@ -9,8 +9,8 @@ class Property_model extends CI_Model
 	public function get_all_active_property_type()
 	{
 		$this->db->where('property_type_status = 1');
-		$this->db->order_by('property_type_name');
-		$query = $this->db->get('property_type');
+		$this->db->order_by('rental_unit_name');
+		$query = $this->db->get('rental_unit');
 		
 		return $query;
 

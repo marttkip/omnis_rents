@@ -7,14 +7,19 @@
         </div>
         <ul id="filtrable" class="filtrable nav nav-pills ">
             <li class="all current"><a href="#" data-filter="*">All</a></li>
-            <li class="rent"><a href="#" data-filter=".rent">Rent</a></li>
-            <li class="sale"><a href="#" data-filter=".sale">Sale</a></li>
-            <li class="apartment"><a href="#" data-filter=".apartment">Apartment</a></li>
-            <li class="villa"><a href="#" data-filter=".villa">Villa</a></li>
+        	<?php
+            if($property_type_names->num_rows() > 0)
+			{
+				foreach($property_type_names->result() as $res)
+				{
+					$property_type_name = $res->property_type_name;
+					echo '<li class="'.$property_type_name.'"><a href="#" data-filter=".'.$property_type_name.'">'.$property_type_name.'</a></li>';
+				}
+			}
+			?>
         </ul>
         <div class="clear"></div>
         <section class="row items">
-            
             
             <?php
 			if($latest->num_rows() > 0)
@@ -56,7 +61,7 @@
 					}
 
 					echo '
-						<article class="item col-sm-6 col-md-4 rent apartment">
+						<article class="item col-sm-6 col-md-4 '.$property_type_name.'">
 							<div class="thumbnail">
 								<a href="'.base_url().'properties/view-single/'.$rental_unit_id.'">'.$image.'</a>
 			

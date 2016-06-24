@@ -13,7 +13,7 @@
 
 
 $all_leases = $this->leases_model->get_tenant_unit_leases($tenant_id,$rental_unit_id);
-
+$arrears_bf = 0;
 $result = '';
 		
 //if users exist display them
@@ -49,7 +49,7 @@ if ($all_leases->num_rows() > 0)
 		$lease_duration = $leases_row->lease_duration;
 		$rent_amount = $leases_row->rent_amount;
 		$lease_number = $leases_row->lease_number;
-		$arrears_bf = $leases_row->arrears_bf;
+		$arrears_bf = $leases_row->arreas_bf;
 		$rent_calculation = $leases_row->rent_calculation;
 		$deposit = $leases_row->deposit;
 		$deposit_ext = $leases_row->deposit_ext;

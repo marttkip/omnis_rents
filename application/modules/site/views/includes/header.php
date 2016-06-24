@@ -1,4 +1,4 @@
-   <title>First National | Real Estate</title>
+   <title>Omnis | Real Estate</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="<?php echo base_url();?>assets/images/thumbnail.jpg" rel="shortcut icon">

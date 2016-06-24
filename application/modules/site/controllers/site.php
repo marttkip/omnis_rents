@@ -38,11 +38,12 @@ class Site extends MX_Controller {
 		$v_data['latest'] = $this->site_model->get_latest_properties();
 		$v_data['featured'] = $this->site_model->get_featured_properties();
 		$v_data['slides'] = $this->site_model->get_slides();
+		$v_data['property_type_names'] = $this->site_model->get_property_types();
 		// $v_data['brands'] = $this->brands_model->all_active_brands();
 		// $v_data['all_children'] = $this->categories_model->all_child_categories();
 		// $v_data['parent_categories'] = $this->categories_model->all_parent_categories();
 
-		$property_type_query = $this->property_model->get_all_active_property_type();
+		$property_type_query = $this->site_model->get_property_types();
 		if($property_type_query->num_rows > 0)
 		{
 			$property_types = '';
@@ -73,8 +74,8 @@ class Site extends MX_Controller {
 	}
 	public function property() 
 	{
-		$where = 'property.property_type_id = property_type.property_type_id AND property.location_id = location.location_id AND bathroom.bathroom_id = property.property_bathrooms AND bedrooms.bedrooms_id = property.bedrooms AND car_spaces.car_space_id = property.car_space_id';
-		$table = 'property,location,property_type,bedrooms,bathroom,car_spaces';
+		$where = 'bathroom.bathroom_id = rental_unit.rental_unit_bathrooms AND bedrooms.bedrooms_id = rental_unit.bedrooms AND car_spaces.car_space_id = rental_unit.car_space_id AND property.property_status = 1 AND rental_unit.rental_unit_status AND location.location_id = property.location_id AND property_type.property_type_id = property.property_type_id';
+		$table = 'property,rental_unit, location,property_type,bathroom,bedrooms,car_spaces';
 		//pagination
 		$this->load->library('pagination');
 		$segment = 2;
@@ -111,7 +112,7 @@ class Site extends MX_Controller {
 		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
         $v_data["links"] = $this->pagination->create_links();
 		$query = $this->site_model->get_properties($table, $where, $config["per_page"], $page);
-		$property_type_query = $this->property_model->get_all_active_property_type();
+		$property_type_query = $this->site_model->get_property_types();
 		if($property_type_query->num_rows > 0)
 		{
 			$property_types = '';
@@ -143,8 +144,8 @@ class Site extends MX_Controller {
 	}
 	public function properties()
 	{
-		$where = 'property.property_type_id = property_type.property_type_id AND property.location_id = location.location_id   AND bathroom.bathroom_id = property.property_bathrooms AND bedrooms.bedrooms_id = property.bedrooms AND car_spaces.car_space_id = property.car_space_id';
-		$table = 'property,location,property_type,bedrooms,bathroom,car_spaces';
+		$where = 'bathroom.bathroom_id = rental_unit.rental_unit_bathrooms AND bedrooms.bedrooms_id = rental_unit.bedrooms AND car_spaces.car_space_id = rental_unit.car_space_id AND property.property_status = 1 AND rental_unit.rental_unit_status AND location.location_id = property.location_id AND property_type.property_type_id = property.property_type_id';
+		$table = 'property,rental_unit, location,property_type,bathroom,bedrooms,car_spaces';
 		$segment = 2;
 		$search_property = $this->session->userdata('property_search');
 		
@@ -187,7 +188,7 @@ class Site extends MX_Controller {
 		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
         $data["links"] = $this->pagination->create_links();
 		$query = $this->site_model->get_properties($table, $where, $config["per_page"], $page);
-		$property_type_query = $this->property_model->get_all_active_property_type();
+		$property_type_query = $this->site_model->get_property_types();
 		if($property_type_query->num_rows > 0)
 		{
 			$property_types = '';
@@ -223,8 +224,8 @@ class Site extends MX_Controller {
 
 	public function property_onsale()
 	{
-		$where = 'property.property_type_id = property_type.property_type_id AND property.location_id = location.location_id AND property.sale_status = 1 AND bathroom.bathroom_id = property.property_bathrooms AND bedrooms.bedrooms_id = property.bedrooms AND car_spaces.car_space_id = property.car_space_id';
-		$table = 'property,location,property_type,bedrooms,bathroom,car_spaces';
+		$where = 'bathroom.bathroom_id = rental_unit.rental_unit_bathrooms AND bedrooms.bedrooms_id = rental_unit.bedrooms AND car_spaces.car_space_id = rental_unit.car_space_id AND property.property_status = 1 AND rental_unit.rental_unit_status AND location.location_id = property.location_id AND property_type.property_type_id = property.property_type_id AND rental_unit.sale_status = 1';
+		$table = 'property,rental_unit, location,property_type,bathroom,bedrooms,car_spaces';
 		$segment = 3;
 		
 		$search = $this->session->userdata('property_sold_search');
@@ -269,7 +270,7 @@ class Site extends MX_Controller {
 		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
         $data["links"] = $this->pagination->create_links();
 		$query = $this->site_model->get_all_properties($table, $where, $config["per_page"], $page);
-		$property_type_query = $this->property_model->get_all_active_property_type();
+		$property_type_query = $this->site_model->get_property_types();
 		if($property_type_query->num_rows > 0)
 		{
 			$property_types = '';
@@ -304,8 +305,8 @@ class Site extends MX_Controller {
 
 	public function property_sold()
 	{
-		$where = 'property.property_type_id = property_type.property_type_id AND property.location_id = location.location_id AND property.sale_status = 2   AND bathroom.bathroom_id = property.property_bathrooms AND bedrooms.bedrooms_id = property.bedrooms AND car_spaces.car_space_id = property.car_space_id';
-		$table = 'property,location,property_type,bathroom, bedrooms, car_spaces';
+		$where = 'bathroom.bathroom_id = rental_unit.rental_unit_bathrooms AND bedrooms.bedrooms_id = rental_unit.bedrooms AND car_spaces.car_space_id = rental_unit.car_space_id AND property.property_status = 1 AND rental_unit.rental_unit_status AND location.location_id = property.location_id AND property_type.property_type_id = property.property_type_id AND rental_unit.sale_status = 2';
+		$table = 'property,rental_unit, location,property_type,bathroom,bedrooms,car_spaces';
 		$segment = 3;
 		
 		$search = $this->session->userdata('property_search');
@@ -349,7 +350,7 @@ class Site extends MX_Controller {
 		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
         $data["links"] = $this->pagination->create_links();
 		$query = $this->site_model->get_all_properties($table, $where, $config["per_page"], $page);
-		$property_type_query = $this->property_model->get_all_active_property_type();
+		$property_type_query = $this->site_model->get_property_types();
 		if($property_type_query->num_rows > 0)
 		{
 			$property_types = '';
@@ -363,7 +364,7 @@ class Site extends MX_Controller {
 			
 		}
 		$v_data['property_types'] = $property_types;
-		$v_data['title'] = 'Properties sold';
+		$v_data['title'] = 'Properties To Let';
 		if ($query->num_rows() > 0)
 		{
 			$v_data['query'] = $query;
@@ -1007,6 +1008,38 @@ class Site extends MX_Controller {
 				$this->view_post($post_id);
 			}
 		}
+	}
+	
+	//payment for invoices
+	public function payment($total, $member_id)
+	{
+		$this->session->set_userdata('payment_attendee_id', $member_id);
+		$this->load->model('member_model');
+		$iframe = $this->member_model->make_pesapal_payment($total, $member_id);
+		$v_data['iframe'] = $iframe;
+		$data['content'] = $this->load->view('site/pesapal_payment', $v_data, true);
+		$data['title'] = 'Payment For Invoice '.$invoice_number;
+		$this->load->view('site/templates/account', $data);
+	}
+	
+	public function payment_success($total,$member_id)
+	{
+		//mark booking as paid in the database
+		$payment_data = $this->input->get();
+		$transaction_tracking_id = $payment_data['pesapal_transaction_tracking_id'];
+		$invoice_id = $payment_data['pesapal_merchant_reference'];
+		
+		if($this->member_model->create_payment($transaction_tracking_id, $invoice_id, $total, $member_id))
+		{
+			$this->session->set_userdata('success_message', 'Payment Made successfully');
+		}
+		
+		else
+		{
+			$this->session->set_userdata('error_message', 'No deduction made. Payment Failed');
+		}
+		
+		redirect('account');
 	}
 }
 ?>

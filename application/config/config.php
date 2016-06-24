@@ -17,8 +17,7 @@
 |
 */
 $config['base_url'] = 'http://localhost/omnis_rents/';
-#$config['base_url'] = 'http://192.168.1.122/';
-#$config['base_url'] = 'http://159.203.78.242/';
+$config['base_url'] = 'https://www.omnis.co.ke/real_estate/';
 
 /*
 |--------------------------------------------------------------------------
@@ -388,6 +387,8 @@ $config['modules_locations'] = array(
 $config['appID'] = '687392621328638';
 $config['appSecret'] = '687392621328638';
 $config['mandrill_key']    = 'yjFJ6K54RN6qZillqrUXXg';
+$config['consumer_key'] = 'GXLmfTHjpbrLrAOHBW0SIKn1s+R/6onQ';
+$config['consumer_secret'] = 'ZbZWD3B1wzRYgY91rmSy/L6tjRA=';
 
 
 /* End of file config.php */

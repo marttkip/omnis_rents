@@ -35,7 +35,7 @@
                             
                         </div>
                         <div class="top-right">
-                            <a href="tel:0414072084" ><i class="fa fa-phone"></i></i> 0414 072 084</a>
+                            <a href="tel:0414072084" ><i class="fa fa-phone"></i></i> +254 20 789 5412</a>
                         </div>
                     </div>
                 </div>

@@ -2,26 +2,24 @@
 <div id="footer" class="full-width footer">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4 col-md-3">
+            <div class="col-lg-4 col-md-4">
                 <div class="widget">
                     <h2 class="widget-title">About us</h2>
                     <!-- <h2 class="widget-title"><a href=""><img src="<?php echo base_url();?>assets/themes/realta/img/logo-realta-cropped.png" alt="First National | Real Estate"/></a></h2> -->
-                    <p>A father and son real estate team whose legacy is to give back to the community through sponsorship of many local clubs and charities.</p>
-                    <p>They bring a combination of experience, knowledge and integrity.</p>
+                    <p>Omnis Limited is an IT company that seeks to provide IT and Business solution to solve real world problem across all industries. Omnis Limited does this through offering consulting services, customization and support services.</p>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-3">
+            <div class="col-lg-4 col-md-4">
                 <div class="widget">
                     <h2 class="widget-title">Contact</h2>
                     <ul class="fa-ul-icons">
-                        <li><i class="fa fa-location-arrow"></i><span class="overflowed">12 Old Northern Road, <br/> Baulkham Hills </span></li>
-                        <li><i class="fa fa-phone"></i><a href="tel:0414072084">Scott 0414 072 084</a></li>
-                        <li><i class="fa fa-phone"></i><a href="tel:0414639738">Ian 0414 639 738</a></li>
-                        <li><i class="fa fa-envelope-o"></i><a href="mailto:s.haggarty@wsfn.com.au">s.haggarty@wsfn.com.au</a></li>
+                        <li><i class="fa fa-location-arrow"></i><span class="overflowed">6th Floor Galana Plaza, <br/> Galana Road, Kilimani </span></li>
+                        <li><i class="fa fa-phone"></i><a href="tel:0414072084">+254 726 149 351</a></li>
+                        <li><i class="fa fa-envelope-o"></i><a href="mailto:support@omnis.co.ke">support@omnis.co.ke</a></li>
                     </ul>
                 </div>
             </div>
-             <div class="col-lg-3 col-md-3">
+             <div class="col-lg-4 col-md-4">
                 <div class="widget">
                     <h2 class="widget-title">Newsletter</h2>
                     <p>Latest property & community news.</p>
@@ -52,19 +50,7 @@
                         </div>
                     <?php echo form_close();?>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3">
-                <div class="widget">
-                    <div class="col-sm-12 text-center"> 
-                        <ul class="social">
-                            <li><a href="https://www.facebook.com/firstnationalbaulkhamhills" target="_blank"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="https://twitter.com/FirstNationalBH" target="_blank"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="http://www.youtube.com/channel/UCMWrW1z0TK1s-jrrXx2UVQg" target="_blank"><i class="fa fa-youtube"></i></a></li>
-                            <li><a href="https://plus.google.com/u/0/114966265112746135848/posts" target="_blank"><i class="fa fa-google-plus"></i></a></li>
-                        </ul>
-                    </div>
                     <a href="#top" class="form-button btn btn-success col-sm-12 cd-top"> <i class="fa fa-angle-up"></i>back to top</a>
-                </div>
             </div>
            
         </div>
