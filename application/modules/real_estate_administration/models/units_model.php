@@ -78,6 +78,7 @@ class Units_model extends CI_Model
 		$data = array(
 				'units_name'=>$this->input->post('units_name'),
 				'rental_unit_id'=>$rental_unit_id,
+				'units_number' => $this->create_unit_number($rental_unit_id),
 				'units_status'=>$this->input->post('units_status'),
 				'created'=>date('Y-m-d H:i:s'),
 				'created_by'=>$this->session->userdata('user_id'),
@@ -206,6 +207,46 @@ class Units_model extends CI_Model
 		else{
 			return FALSE;
 		}
+	}
+	
+	public function create_unit_number($rental_unit_id)
+	{
+		//get property id
+		$this->db->where('rental_unit_id = '.$rental_unit_id);
+		$query = $this->db->get('rental_unit');
+		$number = NULL;
+		if($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$preffix = sprintf('%03d', $row->property_id);
+			$preffix_digits = strlen($preffix);
+			//select product code
+			$this->db->where("units_number LIKE '".$preffix."%'");
+			$this->db->select('MAX(units_number) AS number');
+			$query2 = $this->db->get('units');
+			
+			if($query2->num_rows() > 0)
+			{
+				$result = $query2->row();
+				
+				$number = $result->number;
+				if(($number != NULL) && ($number != 1))
+				{
+					$real_number = substr($number, $preffix_digits);
+					$real_number++;//go to the next number
+					$number = $preffix.sprintf('%03d', $real_number);
+				}
+				else
+				{
+					//start generating receipt numbers
+					$number = $preffix.sprintf('%03d', 1);
+				}
+			}
+			else{//start generating receipt numbers
+				$number = $preffix.sprintf('%03d', 1);
+			}
+		}
+		return $number;
 	}
 }
 ?>

@@ -11,6 +11,7 @@ class Messaging extends MX_Controller
 		$this->load->model('admin/admin_model');
 		$this->load->model('admin/users_model');
 		$this->load->model('administration/personnel_model');
+		$this->load->model('accounts/accounts_model');
 
 		$this->csv_path = realpath(APPPATH . '../assets/csv');
 	}
@@ -232,5 +233,170 @@ class Messaging extends MX_Controller
 		redirect('messaging/unsent-messages');
 	}
 
+	public function send_monthly_rent_reminder()
+	{
+		$this->load->model('real_estate_administration/leases_model');
+		$all_leases = $this->leases_model->get_active_lease_detail();
+		
+		if($all_leases->num_rows() > 0)
+		{
+			echo '<table border="1">
+			<tr>
+				<th>#</th>
+				<th>House</th>
+				<th>Tenant</th>
+				<th>Phone</th>
+				<th>Amount</th>
+				<th>Response</th>
+			</tr>';
+			$count = 0;
+			foreach ($all_leases->result() as $leases_row)
+			{
+				$lease_id = $leases_row->lease_id;
+				$tenant_unit_id = $leases_row->tenant_unit_id;
+				$property_name = $leases_row->property_name;
+				$rental_unit_name = $leases_row->rental_unit_name;
+				$tenant_name = $leases_row->tenant_name;
+				$lease_start_date = $leases_row->lease_start_date;
+				$lease_duration = $leases_row->lease_duration;
+				$rent_amount = $leases_row->rent_amount;
+				$lease_number = $leases_row->lease_number;
+				$arreas_bf = $leases_row->arreas_bf;
+				$rent_calculation = $leases_row->rent_calculation;
+				$deposit = $leases_row->deposit;
+				$deposit_ext = $leases_row->deposit_ext;
+				$tenant_phone_number = $leases_row->tenant_phone_number;
+				$tenant_national_id = $leases_row->tenant_national_id;
+				$lease_status = $leases_row->lease_status;
+				$created = $leases_row->created;
+				$units_name = $leases_row->units_name;
+		
+				$lease_start_date = date('jS M Y',strtotime($lease_start_date));
+				
+				// $expiry_date  = date('jS M Y',strtotime($lease_start_date, mktime()) . " + 365 day");
+				$expiry_date  = date('jS M Y', strtotime(''.$lease_start_date.'+1 years'));
+				$outstanding = '';
+				//$total_due = $rent_amount*12;
+				if($arreas_bf < 0)
+				{
+					$arreas_bf = 0;
+				}
+				else
+				{
+					$outstanding = '. Please note you have an outstanding amount of Ksh. '.number_format($arreas_bf).'. Kindly settle the balance promptly. For more information contact Serenity Services on 0704346052';
+				}
+				$total_due = $rent_amount + $arreas_bf;
+				$count++;
+				
+				$message = 'Hello '.$tenant_name.'. Your rent due for July 2016 is Ksh. '.number_format($rent_amount).$outstanding;
+				$results = $this->messaging_model->sms($tenant_phone_number, $message);
+				
+				echo 
+				'
+					<tr>
+						<td>'.$count.'</td>
+						<td>'.$rental_unit_name.' '.$units_name.'</td>
+						<td>'.$tenant_name.'</td>
+						<td>'.$tenant_phone_number.'</td>
+						<td>'.$total_due.'</td>
+						<td>'.$results.'</td>
+					</tr>
+				';
+				
+			}
+			echo '</table>';
+		}
+	}
 
+	public function view_balances()
+	{
+		$this->load->model('real_estate_administration/leases_model');
+		$all_leases = $this->leases_model->get_active_lease_detail();
+		
+		if($all_leases->num_rows() > 0)
+		{
+			echo '<table border="1">
+			<tr>
+				<th>#</th>
+				<th>House</th>
+				<th>Tenant</th>
+				<th>Phone</th>
+				<th>Rent</th>
+				<th>Arrears</th>
+				<th>Total Payments</th>
+				<th>Paid</th>
+				<th>Balance</th>
+			</tr>';
+			$count = 0;
+			foreach ($all_leases->result() as $leases_row)
+			{
+				$lease_id = $leases_row->lease_id;
+				$tenant_unit_id = $leases_row->tenant_unit_id;
+				$property_name = $leases_row->property_name;
+				$rental_unit_name = $leases_row->rental_unit_name;
+				$tenant_name = $leases_row->tenant_name;
+				$lease_start_date = $leases_row->lease_start_date;
+				$lease_duration = $leases_row->lease_duration;
+				$rent_amount = $leases_row->rent_amount;
+				$lease_number = $leases_row->lease_number;
+				$arreas_bf = $leases_row->arreas_bf;
+				$rent_calculation = $leases_row->rent_calculation;
+				$deposit = $leases_row->deposit;
+				$deposit_ext = $leases_row->deposit_ext;
+				$tenant_phone_number = $leases_row->tenant_phone_number;
+				$tenant_national_id = $leases_row->tenant_national_id;
+				$lease_status = $leases_row->lease_status;
+				$created = $leases_row->created;
+				$units_name = $leases_row->units_name;
+				$payments = $this->accounts_model->get_lease_payments2($lease_id);
+				$total_payments = 0;
+				
+				if($payments->num_rows() > 0)
+				{
+					foreach($payments->result() as $res)
+					{
+						$amount_paid = $res->amount_paid;
+						$total_payments += $amount_paid;
+					}
+				}
+		
+				$lease_start_date = date('jS M Y',strtotime($lease_start_date));
+				
+				// $expiry_date  = date('jS M Y',strtotime($lease_start_date, mktime()) . " + 365 day");
+				$expiry_date  = date('jS M Y', strtotime(''.$lease_start_date.'+1 years'));
+				$outstanding = '';
+				//$total_due = $rent_amount*12;
+				if($arreas_bf < 0)
+				{
+					$arreas_bf = 0;
+				}
+				else
+				{
+					$outstanding = '. Please note you have an outstanding amount of Ksh. '.number_format($arreas_bf).'. Kindly settle the balance promptly. For more information contact Serenity Services on 0704346052';
+				}
+				$total_due = $rent_amount + $arreas_bf;
+				$count++;
+				
+				$message = 'Hello '.$tenant_name.'. Your rent due for July 2016 is Ksh. '.number_format($rent_amount).$outstanding;
+				//$results = $this->messaging_model->sms($tenant_phone_number, $message);
+				
+				echo 
+				'
+					<tr>
+						<td>'.$count.'</td>
+						<td>'.$units_name.' '.$lease_id.'</td>
+						<td>'.$tenant_name.'</td>
+						<td>'.$tenant_phone_number.'</td>
+						<td>'.number_format($rent_amount).'</td>
+						<td>'.number_format($arreas_bf).'</td>
+						<td>'.number_format($total_due).'</td>
+						<td>'.number_format($total_payments).'</td>
+						<td>'.number_format(($total_due - $total_payments)).'</td>
+					</tr>
+				';
+				
+			}
+			echo '</table>';
+		}
+	}
 }

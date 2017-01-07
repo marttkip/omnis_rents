@@ -27,7 +27,7 @@ class Sub_units extends admin
 	*/
 	public function index($rental_unit_id, $order = 'units_name', $order_method = 'ASC') 
 	{
-		$where = 'units_id > 0';
+		$where = 'rental_unit_id = '.$rental_unit_id;
 		$table = 'units';
 		//pagination
 		$segment = 5;
@@ -210,6 +210,31 @@ class Sub_units extends admin
 		$this->units_model->deactivate_units($units_id);
 		$this->session->set_userdata('success_message', 'Sub Unit disabled successfully');
 		redirect('sub-units/'.$rental_unit_id);
+	}
+	
+	public function update_unit_numbers()
+	{
+		//get sub units
+		$query = $this->db->get('units');
+		
+		if($query->num_rows() > 0)
+		{
+			foreach($query->result() as $res)
+			{
+				$rental_unit_id = $res->rental_unit_id;
+				$units_id = $res->units_id;
+				$units_name = $res->units_name;
+				$number = $this->units_model->create_unit_number($rental_unit_id);
+				
+				//update sub unit
+				$this->db->where('units_id', $units_id);
+				if($this->db->update("units", array('units_number' => $number)))
+				{
+					echo $units_id.' '.$units_name.' updated with '.$number.'<br/>';
+					//die();
+				}
+			}
+		}
 	}
 }
 ?>

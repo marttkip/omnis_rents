@@ -31,10 +31,8 @@ class Reports extends MX_Controller
 	
 	public function all_transactions($module = '__')
 	{
-
-
-		$where = 'payments.lease_id = leases.lease_id AND payment_method.payment_method_id = payments.payment_method_id AND leases.tenant_unit_id = tenant_unit.tenant_unit_id AND payments.payment_status = 1 AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id';
-		$table = 'payments, leases,rental_unit,property,tenant_unit,tenants,payment_method';
+		$where = 'payments.lease_id = leases.lease_id AND payment_method.payment_method_id = payments.payment_method_id AND leases.tenant_unit_id = tenant_unit.tenant_unit_id AND payments.payment_status = 1 AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.units_id = units.units_id AND rental_unit.property_id = property.property_id AND units.rental_unit_id = rental_unit.rental_unit_id';
+		$table = 'payments, leases,rental_unit,property,tenant_unit,tenants,payment_method, units';
 		
 		$transaction_search = $this->session->userdata('all_transactions_search');
 		$table_search = $this->session->userdata('all_transactions_tables');
@@ -98,9 +96,7 @@ class Reports extends MX_Controller
 		$v_data['module'] = $module;
 		$v_data['query'] = $query;
 		$v_data['page'] = $page;
-
-
-
+		
 		$properties = $this->property_model->get_active_property();
 		$rs8 = $properties->result();
 		$property_list = '';
@@ -126,9 +122,7 @@ class Reports extends MX_Controller
 
 		endforeach;
 		$v_data['branches_list'] = $branches_list;
-
-
-
+		
 		$v_data['total_payments'] = $this->reports_model->get_total_cash_collection($where, $table);
 		$v_data['normal_payments'] = $this->reports_model->get_normal_payments($where, $table);
 		$v_data['payment_methods'] = $this->reports_model->get_payment_methods($where, $table);

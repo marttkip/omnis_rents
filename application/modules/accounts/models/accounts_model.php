@@ -141,17 +141,54 @@ class Accounts_model extends CI_Model
 		
 		return $this->db->get('cancel_action');
 	}
+	
 	public function get_lease_payments($lease_id)
 	{
 		$this->db->where('leases.lease_id = payments.lease_id AND payments.lease_id = '.$lease_id.' AND leases.lease_status = 1 AND payments.year ='.date('Y'));
 		
+		return $this->db->get('payments, leases');
+	}
+	
+	public function get_lease_payments2($lease_id, $year = NULL, $month = NULL)
+	{
+		if($year != NULL)
+		{
+			$this->db->where('leases.lease_id = payments.lease_id AND payments.lease_id = '.$lease_id.' AND payments.year ='.$year.' AND payments.month ='.$month);
+		}
+		
+		else
+		{
+			$this->db->where('leases.lease_id = payments.lease_id AND payments.lease_id = '.$lease_id);
+		}
+		
 		return $this->db->get('payments,leases');
+	}
+	public function create_receipt_number()
+	{
+		//select product code
+		$preffix = "SSL-REC-";
+		$this->db->from('payments');
+		$this->db->where("receipt_number LIKE '".$preffix."%'");
+		$this->db->select('MAX(receipt_number) AS number');
+		$query = $this->db->get();//echo $query->num_rows();
+		
+		if($query->num_rows() > 0)
+		{
+			$result = $query->result();
+			$number =  $result[0]->number;
+			$real_number = str_replace($preffix, "", $number);
+			$real_number++;//go to the next number
+			$number = $preffix.sprintf('%03d', $real_number);
+		}
+		else{//start generating receipt numbers
+			$number = $preffix.sprintf('%03d', 1);
+		}
+		
+		return $number;
 	}
 	public function receipt_payment($lease_id,$personnel_id = NULL){
 		$amount = $this->input->post('amount_paid');
 		$payment_method=$this->input->post('payment_method');
-		
-		
 		
 		if($payment_method == 1)
 		{
@@ -183,7 +220,7 @@ class Accounts_model extends CI_Model
 			'personnel_id'=>$this->session->userdata("personnel_id"),
 			'transaction_code'=>$transaction_code,
 			'payment_date'=>$this->input->post('payment_date'),
-			'receipt_number'=>$this->input->post('receipt_number'),
+			'receipt_number'=>$this->create_receipt_number(),
 			'paid_by'=>$this->input->post('paid_by'),
 			'payment_created'=>date("Y-m-d"),
 			'year'=>$year,
@@ -782,8 +819,7 @@ class Accounts_model extends CI_Model
 				$rent_amount = $key->rent_amount;
 				$inital_rent_amount = $key->rent_amount;
 				$arreas_bf = $key->arreas_bf;
-
-
+				
 				// get the year and the month
 				$date = explode('-', $lease_start_date);
 				$month = $date[1];
@@ -835,6 +871,7 @@ class Accounts_model extends CI_Model
 							$this->db->select('*');
 							$this->db->where('invoice_month = "'.$prev_month_debt.'" and invoice_year = '.$year.' AND lease_id = '.$lease_id);
 							$invoice_query2 = $this->db->get();
+							$previous_invoice = 0;
 							if($invoice_query2->num_rows() > 0)
 							{
 								foreach ($invoice_query2->result() as $prev_key) {
@@ -984,9 +1021,180 @@ class Accounts_model extends CI_Model
 		{
 			$total_paid = 0;
 		}
-
+		
 		return $total_paid;
 	}
-
+	
+	public function get_payment_details($payment_id)
+	{
+		$this->db->where('leases.lease_id = payments.lease_id AND payments.payment_id = '.$payment_id);
+		
+		return $this->db->get('payments, leases');
+	}
+	
+	public function get_personnel($personnel_id)
+	{
+		if(empty($personnel_id))
+		{
+			//redirect('login');
+			$personnel = '-';
+		}
+		
+		else
+		{
+			$this->db->select('personnel.personnel_fname, personnel.personnel_onames');
+			$this->db->from('personnel');
+			$this->db->where('personnel.personnel_id = '.$personnel_id);
+			
+			$query = $this->db->get();
+			
+			if($query->num_rows() > 0)
+			{
+				$row = $query->row();
+				$personnel = $row->personnel_onames.' '.$row->personnel_fname;
+			}
+			
+			else
+			{
+				$personnel = '-';
+			}
+			
+			return $personnel;
+		}
+	}
+	
+	public function receipt_auto_payment()
+	{
+		$mpesa_data = $this->input->post('mpesa_data');
+		$payment_data = explode(' ', $mpesa_data);
+		$transaction_code = $payment_data[0];
+		$date = explode('/', $payment_data[3]);
+		$transaction_date = $date[2].'-'.$date[1].'-'.$date[0];
+		$transaction_time = $payment_data[5].' '.$payment_data[6];
+		$cost = $payment_data[7];
+		$paid_by = $payment_data[10].' '.$payment_data[11].' '.$payment_data[12];
+		$account_no = $payment_data[16];
+		$payment_method = 5;
+		$cost_array = explode('Ksh', $cost);
+		$rent_amount = str_replace(',', '', $cost_array[1]);
+		$amount = intval($rent_amount);
+		
+		$lease_id = $this->get_lease_id($account_no);
+		
+		//var_dump($payment_data); die();
+		//lease found
+		if($lease_id > 0)
+		{
+			//check if payment exists
+			$exists = $this->check_payment_exists($transaction_code);
+			
+			if(!$exists)
+			{
+				// end of point calculation
+				$date_check = explode('-', $transaction_date);
+				$month = $date_check[1];
+				$year = $date_check[0];
+				$data = array(
+					'lease_id' => $lease_id,
+					'payment_method_id'=>$payment_method,
+					'amount_paid'=>$amount,
+					'personnel_id'=>0,
+					'transaction_code'=>$transaction_code,
+					'payment_date'=>$transaction_date,
+					'receipt_number'=>$this->create_receipt_number(),
+					'paid_by'=>$paid_by,
+					'payment_created'=>date("Y-m-d"),
+					'year'=>$year,
+					'month'=>$month,
+					'payment_created_by'=>0,
+					'approved_by'=>0,
+					'date_approved'=>date('Y-m-d')
+				);
+				//var_dump($data); die();
+				if($this->db->insert('payments', $data))
+				{
+					$return['message'] = TRUE;
+				}
+				else
+				{
+					$return['message'] = FALSE;
+					$return['result'] = 'Unable to save payment';
+				}
+			}
+			
+			else
+			{
+				$return['message'] = FALSE;
+				$return['result'] = 'Paymnt already saved';
+			}
+		}
+		
+		//lease not found
+		else
+		{
+			$date_check = explode('-', $transaction_date);
+			$month = $date_check[1];
+			$year = $date_check[0];
+			$data = array(
+				'payment_method_id'=>$payment_method,
+				'amount_paid'=>$amount,
+				'personnel_id'=>0,
+				'transaction_code'=>$transaction_code,
+				'payment_date'=>$transaction_date,
+				'receipt_number'=>$this->create_receipt_number(),
+				'paid_by'=>$paid_by,
+				'payment_created'=>date("Y-m-d"),
+				'year'=>$year,
+				'month'=>$month,
+				'payment_created_by'=>0,
+				'approved_by'=>0,
+				'date_approved'=>date('Y-m-d')
+			);
+			if($this->db->insert('unclaimed_payments', $data))
+			{
+				$return['message'] = FALSE;
+				$return['result'] = 'Tenant not found';
+			}
+			else{
+				$return['message'] = FALSE;
+				$return['result'] = 'Unable to save payment';
+			}
+		}
+		
+		return $return;
+	}
+	
+	public function get_lease_id($account_no)
+	{
+		$this->db->select('lease_id');
+		$this->db->where('leases.lease_status = 1 AND leases.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.rental_unit_name = \''.$account_no.'\'');
+		$query = $this->db->get('leases, rental_unit');
+		
+		$lease_id = 0;
+		if($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$lease_id = $row->lease_id;
+		}
+		
+		return $lease_id;
+	}
+	
+	public function check_payment_exists($transaction_code)
+	{
+		$this->db->select('payment_id');
+		$this->db->where('transaction_code = \''.$transaction_code.'\'');
+		$query = $this->db->get('payments');
+		
+		if($query->num_rows() > 0)
+		{
+			return TRUE;
+		}
+		
+		else
+		{
+			return FALSE;
+		}
+	}
 }
 ?>

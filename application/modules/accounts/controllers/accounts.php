@@ -22,11 +22,9 @@ class Accounts extends property {
 	*/
 	public function index() 
 	{
-			
-		$where = 'tenants.tenant_id > 0 AND tenants.tenant_id = tenant_unit.tenant_id AND tenant_unit.rental_unit_id = rental_unit.rental_unit_id  AND tenant_unit.tenant_unit_id = leases.tenant_unit_id AND leases.lease_status = 1';
-		$table = 'tenants,tenant_unit,rental_unit,leases';		
-
-
+		$where = 'leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.units_id = units.units_id AND units.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id AND leases.lease_status = 1';
+		$table = 'leases,rental_unit,tenant_unit,tenants,property, units';
+		
 		$accounts_search = $this->session->userdata('all_accounts_search');
 		
 		if(!empty($accounts_search))
@@ -34,7 +32,7 @@ class Accounts extends property {
 			$where .= $accounts_search;	
 			
 		}
-		$segment = 4;
+		$segment = 3;
 		//pagination
 		
 		$this->load->library('pagination');
@@ -61,15 +59,15 @@ class Accounts extends property {
 		$config['prev_link'] = 'Prev';
 		$config['prev_tag_close'] = '</li>';
 		
-		$config['cur_tag_open'] = '<li class="active">';
-		$config['cur_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="#">';
+		$config['cur_tag_close'] = '</a></li>';
 		
 		$config['num_tag_open'] = '<li>';
 		$config['num_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 		
 		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
-        $data["links"] = $this->pagination->create_links();
+        $v_data["links"] = $this->pagination->create_links();
 		$query = $this->accounts_model->get_all_tenants($table, $where, $config["per_page"], $page, $order=NULL, $order_method=NULL);
 
 		$properties = $this->property_model->get_active_property();
@@ -196,8 +194,6 @@ class Accounts extends property {
 		//if form conatins invalid data
 		if ($this->form_validation->run())
 		{
-			
-			
 			$this->accounts_model->receipt_payment($lease_id);
 			
 			redirect('accounts/payments/'.$tenant_unit_id.'/'.$lease_id);
@@ -536,6 +532,68 @@ class Accounts extends property {
 			$this->session->set_userdata('error_message', 'Please check that all the fields have values');
 		}
 		redirect('dashboard');
+	}
+	
+	public function print_receipt($payment_id, $tenant_unit_id, $lease_id)
+	{
+		$data = array('payment_id' => $payment_id, 'tenant_unit_id' => $tenant_unit_id, 'lease_id' => $lease_id);
+		$data['contacts'] = $this->site_model->get_contacts();
+		$data['lease_payments'] = $this->accounts_model->get_lease_payments($lease_id);
+		
+		$data['payment_details'] = $this->accounts_model->get_payment_details($payment_id);
+		$this->load->view('cash_office/receipt', $data);
+	}
+	
+	public function send_sms($payment_id, $tenant_unit_id, $lease_id, $phone = NULL, $message = NULL)
+	{
+		$this->load->model('messaging/messaging_model');
+		$message = $this->site_model->decode_web_name($message);
+		$message .= '. For more information contact Serenity Services Ltd on 0704346052';
+		
+		if(!empty($phone))
+		{
+			$status = $this->messaging_model->sms($phone, $message);
+			
+			if($status == 'Success')
+			{
+				$this->session->set_userdata('success_message', 'Message sent successfully');
+			}
+			
+			else
+			{
+				$this->session->set_userdata('error_message', 'Unable to send message'.$status);
+			}
+		}
+			
+		else
+		{
+			$this->session->set_userdata('error_message', 'Please enter tenant\'s phone number to send message');
+		}
+		
+		redirect('cash-office/payments/'.$tenant_unit_id.'/'.$lease_id);
+	}
+	
+	public function sync_payments()
+	{
+		echo 'here';
+		$this->form_validation->set_rules('mpesa_data', 'Mpesa Data', 'required|xss_clean');
+		
+		//if form conatins invalid data
+		if ($this->form_validation->run())
+		{
+			$this->accounts_model->receipt_auto_payment();
+			
+			$result['message'] = 'success';
+			$result['result'] = 'Sync successfull';
+		}
+		
+		else
+		{
+			$result['message'] = 'error';
+			$result['result'] = validation_errors();
+		}
+		
+		echo json_encode($result);
 	}
 }
 ?>

@@ -1,161 +1,150 @@
 
 <?php 
-if($rental_unit_id == NULL OR $rental_unit_id == 0)
+if($units_id == NULL OR $units_id == 0)
 {
-echo $this->load->view('search/tenants_search','', true);
-
+	echo $this->load->view('search/tenants_search','', true);
+	$link = '';
 }
 else
 {
-
+	$link = '<a href="'.site_url().'sub-units/'.$rental_unit_id.'" class="btn btn-sm btn-default pull-right" style="margin-left:5px; margin-top:-5px" >Back to rental units</a>';
 }
- ?>
+$result = '';
+$items = '';
+if($units_id == NULL OR $units_id == 0)
+{
+	$items = '';
 
-<?php	
-
-		$result = '';
-		$items = '';
-		if($rental_unit_id == NULL OR $rental_unit_id == 0)
+}else {
+	# code...
+	$items = '<th><a >Lease Status</a></th>';
+}
+//if tenants exist display them
+if ($tenants->num_rows() > 0)
+{
+	$count = $page;
+	
+	$result .= 
+	'
+	<table class="table table-bordered table-striped table-condensed">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th><a >Name</a></th>
+				<th><a >National Id</a></th>
+				<th><a >Phone Number</a></th>
+				<th><a >Email Address</a></th>
+				<th><a >Profile Status</a></th>
+				'.$items.'
+				<th colspan="5">Actions</th>
+			</tr>
+		</thead>
+		  <tbody>
+	';
+	foreach ($tenants->result() as $row)
+	{
+		$tenant_id = $row->tenant_id;
+		$tenant_name = $row->tenant_name;
+		//create deactivated status display
+		if($row->tenant_status == 0)
 		{
-			$items = '';
-
-		}else {
-			# code...
-			$items = '<th><a >Lease Status</a></th>';
+			$status = '<span class="label label-important">Deactivated</span>';
+			$button = '<a class="btn btn-info" href="'.site_url().'activate-tenant/'.$tenant_id.'" onclick="return confirm(\'Do you want to activate '.$tenant_name.'?\');" title="Activate '.$tenant_name.'"><i class="fa fa-thumbs-up"></i></a>';
 		}
-		//if tenants exist display them
-		if ($tenants->num_rows() > 0)
+		//create activated status display
+		else if($row->tenant_status == 1)
 		{
-			$count = $page;
-			
-			$result .= 
-			'
-			<table class="table table-bordered table-striped table-condensed">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th><a >Name</a></th>
-						<th><a >National Id</a></th>
-						<th><a >Phone Number</a></th>
-						<th><a >Email Address</a></th>
-						<th><a >Profile Status</a></th>
-						'.$items.'
-						<th colspan="5">Actions</th>
-					</tr>
-				</thead>
-				  <tbody>
-			';
-			foreach ($tenants->result() as $row)
+			$status = '<span class="label label-success">Active</span>';
+			$button = '<a class="btn btn-default" href="'.site_url().'deactivate-tenant/'.$tenant_id.'" onclick="return confirm(\'Do you want to deactivate '.$tenant_name.'?\');" title="Deactivate '.$tenant_name.'"><i class="fa fa-thumbs-down"></i></a>';
+		}
+		if($units_id == NULL  OR $units_id == 0)
+		{
+			$tenancy_status = '';
+			$lease_info = '';
+		}
+		else
+		{
+			// check the tenancy status
+			$tenancy_query = $this->tenants_model->get_tenancy_details($tenant_id,$units_id);
+			if($tenancy_query->num_rows() > 0)
 			{
-				$tenant_id = $row->tenant_id;
-				$tenant_name = $row->tenant_name;
-				//create deactivated status display
-				if($row->tenant_status == 0)
-				{
-					$status = '<span class="label label-important">Deactivated</span>';
-					$button = '<a class="btn btn-info" href="'.site_url().'activate-tenant/'.$tenant_id.'" onclick="return confirm(\'Do you want to activate '.$tenant_name.'?\');" title="Activate '.$tenant_name.'"><i class="fa fa-thumbs-up"></i></a>';
-				}
-				//create activated status display
-				else if($row->tenant_status == 1)
-				{
-					$status = '<span class="label label-success">Active</span>';
-					$button = '<a class="btn btn-default" href="'.site_url().'deactivate-tenant/'.$tenant_id.'" onclick="return confirm(\'Do you want to deactivate '.$tenant_name.'?\');" title="Deactivate '.$tenant_name.'"><i class="fa fa-thumbs-down"></i></a>';
-				}
-				if($rental_unit_id == NULL  OR $rental_unit_id == 0)
-				{
-					$tenancy_status = '';
-					$lease_info = '';
-				}
-				else
-				{
-					// check the tenancy status
-					$tenancy_query = $this->tenants_model->get_tenancy_details($tenant_id,$rental_unit_id);
-					if($tenancy_query->num_rows() > 0)
+					foreach ($tenancy_query->result() as $key) {
+						# code...
+						$tenant_unit_status =$key->tenant_unit_status;
+					}
+
+					if($tenant_unit_status == 1)
 					{
-							foreach ($tenancy_query->result() as $key) {
-								# code...
-								$tenant_unit_status =$key->tenant_unit_status;
-							}
-
-							if($tenant_unit_status == 1)
-							{
-								$tenancy_status = '<td><span class="label label-success">Active</span></td>';
-							}
-							else
-							{
-								$tenancy_status = '<td><span class="label label-warning">Not active</span></td>';
-							}
-
+						$tenancy_status = '<td><span class="label label-success">Active</span></td>';
 					}
 					else
 					{
 						$tenancy_status = '<td><span class="label label-warning">Not active</span></td>';
 					}
-					$lease_info = '
-						<td>
-							<a  class="btn btn-sm btn-primary" id="open_lease_details'.$tenant_id.'" onclick="get_tenant_leases('.$tenant_id.')" ><i class="fa fa-folder"></i> Open Lease Info</a>
-							<a  class="btn btn-sm btn-warning" id="close_lease_details'.$tenant_id.'" style="display:none;" onclick="close_tenant_leases('.$tenant_id.')"><i class="fa fa-folder"></i> Close Lease Info</a>
-						</td>';
-				}
 
-
-				$count++;
-				$result .= 
-				'
-					<tr>
-						<td>'.$count.'</td>
-						<td>'.$row->tenant_name.' </td>
-						<td>'.$row->tenant_national_id.' </td>
-						<td>'.$row->tenant_phone_number.' </td>
-						<td>'.$row->tenant_email.' </td>
-						<td>'.$status.'</td>
-						'.$tenancy_status.'
-						<td>
-							<a  class="btn btn-sm btn-success" id="open_tenant_info'.$tenant_id.'" onclick="get_tenant_info('.$tenant_id.');" ><i class="fa fa-folder"></i> Tenant Details</a>
-							<a  class="btn btn-sm btn-warning" id="close_tenant_info'.$tenant_id.'" style="display:none;" onclick="close_tenant_info('.$tenant_id.')"><i class="fa fa-folder-open"></i> Close Tenant Info</a>
-						</td>
-						'.$lease_info.'
-						<td><a href="'.site_url().'edit-tenant/'.$tenant_id.'" class="btn btn-sm btn-success"title="Edit '.$tenant_name.'"><i class="fa fa-pencil"></i></a></td>
-						<td>'.$button.'</td>
-						<td><a href="'.site_url().'delete-tenant/'.$tenant_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$tenant_name.'?\');" title="Delete '.$tenant_name.'"><i class="fa fa-trash"></i></a></td>
-					</tr> 
-				';
-				$v_data['tenant_id'] = $tenant_id;
-				$v_data['rental_unit_id'] = $rental_unit_id;
-				if($rental_unit_id != NULL)
-				{
-					$result .= '<tr id="lease_details'.$tenant_id.'" style="display:none;">
-								<td colspan="12">
-									'.$this->load->view("leases/view_lease", $v_data, TRUE).'
-								</td>
-							</tr>';
-				}
-				
-				$result .= '<tr id="tenant_info'.$tenant_id.'" style="display:none;">
-								<td colspan="12">
-									'.$this->load->view("tenants/view_detail", $v_data, TRUE).'
-								</td>
-							</tr>';
 			}
-				
-			$result .= 
-			'
-						  </tbody>
-						</table>
-			';
+			else
+			{
+				$tenancy_status = '<td><span class="label label-warning">Not active</span></td>';
+			}
+			$lease_info = '
+				<td>
+					<a  class="btn btn-sm btn-primary" id="open_lease_details'.$tenant_id.'" onclick="get_tenant_leases('.$tenant_id.')" ><i class="fa fa-folder"></i> Open Lease Info</a>
+					<a  class="btn btn-sm btn-warning" id="close_lease_details'.$tenant_id.'" style="display:none;" onclick="close_tenant_leases('.$tenant_id.')"><i class="fa fa-folder"></i> Close Lease Info</a>
+				</td>';
 		}
-		
-		else
+
+
+		$count++;
+		$result .= 
+		'
+			<tr>
+				<td>'.$count.'</td>
+				<td>'.$row->tenant_name.' </td>
+				<td>'.$row->tenant_national_id.' </td>
+				<td>'.$row->tenant_phone_number.' </td>
+				<td>'.$row->tenant_email.' </td>
+				<td>'.$status.'</td>
+				'.$tenancy_status.'
+				<td>
+					<a  class="btn btn-sm btn-success" id="open_tenant_info'.$tenant_id.'" onclick="get_tenant_info('.$tenant_id.');" ><i class="fa fa-folder"></i> Tenant Details</a>
+					<a  class="btn btn-sm btn-warning" id="close_tenant_info'.$tenant_id.'" style="display:none;" onclick="close_tenant_info('.$tenant_id.')"><i class="fa fa-folder-open"></i> Close Tenant Info</a>
+				</td>
+				'.$lease_info.'
+				<td><a href="'.site_url().'edit-tenant/'.$tenant_id.'" class="btn btn-sm btn-success"title="Edit '.$tenant_name.'"><i class="fa fa-pencil"></i></a></td>
+				<td>'.$button.'</td>
+				<td><a href="'.site_url().'delete-tenant/'.$tenant_id.'/'.$units_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$tenant_name.'?\');" title="Delete '.$tenant_name.'"><i class="fa fa-trash"></i></a></td>
+			</tr> 
+		';
+		$v_data['tenant_id'] = $tenant_id;
+		$v_data['units_id'] = $units_id;
+		if($units_id != NULL)
 		{
-			$result .= "There are no tenants";
+			$result .= '<tr id="lease_details'.$tenant_id.'" style="display:none;">
+						<td colspan="12">
+							'.$this->load->view("leases/view_lease", $v_data, TRUE).'
+						</td>
+					</tr>';
 		}
+		
+		$result .= '<tr id="tenant_info'.$tenant_id.'" style="display:none;">
+						<td colspan="12">
+							'.$this->load->view("tenants/view_detail", $v_data, TRUE).'
+						</td>
+					</tr>';
+	}
+		
+	$result .= 
+	'
+				  </tbody>
+				</table>
+	';
+}
 
-		
-			$link = '<a href="'.site_url().'rental-management/rental-units" class="btn btn-sm btn-default pull-right" style="margin-left:5px; margin-top:-5px" >Back to rental units</a>';
-
-		
-		
-		
+else
+{
+	$result .= "There are no tenants";
+}	
 ?>
 						<section class="panel">
 							<header class="panel-heading">
@@ -170,7 +159,7 @@ else
                                     <div class="col-lg-12">
                                     	<!-- <a href="<?php echo site_url();?>add-tenant" class="btn btn-success btn-sm pull-right">Add tenant</a> -->
                                     	<?php
-                                    	if($rental_unit_id == 0)
+                                    	if($units_id == 0)
                                     	{
 
                                     	}
@@ -200,14 +189,14 @@ else
                                     			<div class="col-lg-12 col-sm-12 col-md-12">
                                     				<div class="row">
                                     				<?php 
-                                    					if($rental_unit_id == NULL AND $rental_unit_id == 0)
+                                    					if($units_id == NULL AND $units_id == 0)
                                     					{
                                     						echo form_open("add-tenant", array("class" => "form-horizontal", "role" => "form"));
 
                                     					}
                                     					else
                                     					{
-                                    						echo form_open("add-tenant/".$rental_unit_id."", array("class" => "form-horizontal", "role" => "form"));
+                                    						echo form_open("add-tenant/".$units_id."", array("class" => "form-horizontal", "role" => "form"));
                                     					}
                                     				?>
 	                                    				<div class="col-md-12">
@@ -275,7 +264,7 @@ else
 										</header>
 										<div class="panel-body">
 											<div class="row" style="margin-bottom:20px;">
-												<?php echo form_open("add-tenant-unit/".$rental_unit_id."", array("class" => "form-horizontal", "role" => "form"));?>
+												<?php echo form_open("add-tenant-unit/".$units_id."", array("class" => "form-horizontal", "role" => "form"));?>
                                     			<div class="col-lg-12 col-sm-12 col-md-12">
                                     				<div class="row">
 	                                    				<div class="col-md-12">

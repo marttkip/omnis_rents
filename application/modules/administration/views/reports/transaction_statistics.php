@@ -6,8 +6,8 @@ $debit_notes = 39;
 $credit_notes = 200;
 
 $total_cash_collection = 200;
-$total_inpatient_debt = 20;
-$total_outpatient_debt = 200;
+$total_active_debt = $this->reports_model->calculate_debt(1);
+$total_inactive_debt = $this->reports_model->calculate_debt(0);
 $total_patients = 28;
 ?>
 
@@ -149,15 +149,15 @@ $total_patients = 28;
                             <tbody>
                                 <tr>
                                     <th>Active Leases Debt</th>
-                                    <td><?php echo number_format(($total_inpatient_debt), 2);?></td>
+                                    <td><?php echo number_format(($total_active_debt), 2);?></td>
                                 </tr>
                                 <tr>
                                     <th>Inactive Leases Debt</th>
-                                    <td><?php echo number_format(($total_outpatient_debt - $total_cash_collection), 2);?></td>
+                                    <td><?php echo number_format(($total_inactive_debt), 2);?></td>
                                 </tr>
                                 <tr>
                                     <th>Total</th>
-                                    <td><?php echo number_format((($total_outpatient_debt - $total_cash_collection) + $total_inpatient_debt), 2);?></td>
+                                    <td><?php echo number_format(($total_active_debt + $total_inactive_debt), 2);?></td>
                                 </tr>
                             </tbody>
                         </table>

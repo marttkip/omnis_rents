@@ -234,7 +234,12 @@ $route['hospital-administration/deactivate-insurance-company/(:num)'] = 'hospita
 $route['accounts/closed-visits'] = 'accounts/payroll/accounts_closed_visits';
 $route['accounts/un-closed-visits'] = 'accounts/payroll/accounts_unclosed_queue';
 $route['accounts/change-branch'] = 'accounts/payroll/change_branch';
+
+$route['accounts/print-paye-report/(:num)'] = 'accounts/payroll/print_paye_report/$1';
+$route['accounts/print-nhif-report/(:num)'] = 'accounts/payroll/print_nhif_report/$1';
+$route['accounts/print-nssf-report/(:num)'] = 'accounts/payroll/print_nssf_report/$1';
 $route['accounts/print-payroll/(:num)'] = 'accounts/payroll/print_payroll/$1';
+$route['accounts/print-month-payslips/(:num)'] = 'accounts/payroll/print_monthly_payslips/$1';
 $route['accounts/export-payroll/(:num)'] = 'accounts/payroll/export_payroll/$1';
 $route['accounts/print-payroll-pdf/(:num)'] = 'accounts/payroll/print_payroll_pdf/$1';
 $route['accounts/payroll/print-payslip/(:num)/(:num)'] = 'accounts/payroll/print_payslip/$1/$2';
@@ -246,6 +251,7 @@ $route['accounts/close-payroll-search'] = 'accounts/payroll/close_payroll_search
 $route['accounts/create-payroll'] = 'accounts/payroll/create_payroll';
 $route['accounts/deactivate-payroll/(:num)'] = 'accounts/payroll/deactivate_payroll/$1';
 $route['accounts/print-payslips'] = 'accounts/payroll/print_payslips';
+$route['accounts/payroll/edit-payment-details/(:num)'] = 'accounts/payroll/edit_payment_details/$1';
 $route['accounts/payroll/edit_allowance/(:num)'] = 'accounts/payroll/edit_allowance/$1';
 $route['accounts/payroll/delete_allowance/(:num)'] = 'accounts/payroll/delete_allowance/$1';
 $route['accounts/payroll/edit_deduction/(:num)'] = 'accounts/payroll/edit_deduction/$1';
@@ -255,6 +261,7 @@ $route['accounts/payroll/delete_saving/(:num)'] = 'accounts/payroll/delete_savin
 $route['accounts/payroll/edit_loan_scheme/(:num)'] = 'accounts/payroll/edit_loan_scheme/$1';
 $route['accounts/payroll/delete_loan_scheme/(:num)'] = 'accounts/payroll/delete_loan_scheme/$1';
 $route['accounts/payroll'] = 'accounts/payroll/payrolls';
+$route['accounts/all-payroll'] = 'accounts/payroll/all_payrolls';
 $route['accounts/payment-details/(:num)'] = 'accounts/payroll/payment_details/$1';
 $route['accounts/save-payment-details/(:num)'] = 'accounts/payroll/save_payment_details/$1';
 $route['accounts/update-savings/(:num)'] = 'accounts/payroll/update_savings/$1';
@@ -290,6 +297,86 @@ $route['accounts/payroll/edit-personnel-savings/(:num)'] = 'accounts/payroll/edi
 $route['accounts/payroll/edit-personnel-loan-schemes/(:num)'] = 'accounts/payroll/edit_personnel_loan_schemes/$1';
 $route['accounts/payroll/edit-personnel-relief/(:num)'] = 'accounts/payroll/edit_personnel_relief/$1';
 $route['accounts/payroll/view-payslip/(:num)'] = 'accounts/payroll/view_payslip/$1';
+$route['accounts/payroll/generate-batch-payroll/(:num)/(:num)/(:num)'] = 'accounts/payroll/generate_payroll/$1/$2/$3';
+$route['accounts/payroll/generate-batch-payroll/(:num)/(:num)/(:num)/(:num)'] = 'accounts/payroll/generate_payroll/$1/$2/$3/$4';
+$route['accounts/payroll/view-batch-payslip/(:num)/(:num)'] = 'accounts/payroll/view_batch_payslip/$1/$2';
+$route['accounts/payroll/send-batch-payslip/(:num)/(:num)'] = 'accounts/payroll/send_batch_payslip/$1/$2';
+$route['accounts/print-month-summary/(:num)/(:num)'] = 'accounts/payroll/month_summary/$1/$2';
+$route['accounts/print-month-payslips2/(:num)'] = 'accounts/payroll/print_monthly_payslips2/$1';
+$route['payroll/add-overtime-hours/(:num)'] = 'accounts/payroll/add_overtime_hours/$1';
+$route['accounts/create-data-file/(:num)/(:num)'] = 'accounts/payroll/create_data_file/$1/$2';
+$route['accounts/list-batches/(:num)/(:num)'] = 'accounts/payroll/list_batches/$1/$2';
+$route['accounts/list-batches/(:num)/(:num)/(:num)'] = 'accounts/payroll/list_batches/$1/$2/$3';
+
+//import personnel routes
+$route['import/personnel'] = 'hr/personnel/import_personnel';
+$route['import/personnel-template'] = 'hr/personnel/import_personnel_template';
+$route['import/import-personnel'] = 'hr/personnel/do_personnel_import';
+
+//import personnel emails
+$route['import/personnel-emails'] = 'hr/personnel/import_personnel_emails';
+$route['import/personnel-emails-template'] = 'hr/personnel/import_personnel_emails_template';
+$route['import/import-personnel-emails'] = 'hr/personnel/do_personnel_emails_import';
+
+//import branches routes
+$route['import/branches'] = 'admin/branches/import_branches';
+$route['import/branches-template'] = 'admin/branches/import_branches_template';
+$route['import/import-branches'] = 'admin/branches/do_branches_import';
+
+//payroll data import
+$route['import/payroll-data'] = 'hr/import_payroll';
+$route['import/payroll-template'] = 'hr/import_payroll_template';
+$route['import/import-payroll']= 'hr/do_payroll_import';
+
+//import salary advances
+$route['salary-advance/import-salary-advance'] = 'accounts/salary_advance/import_salary_advance';
+$route['import/import-salary-advances'] = 'accounts/salary_advance/do_advance_import';
+$route['import/advance-template'] = 'accounts/salary_advance/advances_template';
+$route['download-salary-advance'] = 'accounts/salary_advance/download_salary_advance';
+
+// p9 form
+$route['my-account/p9'] = 'accounts/payroll/generate_p9_form';
+$route['accounts/generate_p9_form'] = 'accounts/payroll/p9_form';
+
+//p10 form
+$route['accounts/p10'] = 'accounts/payroll/generate_p10_form';
+$route['accounts/generate_p10_form'] = 'accounts/payroll/p10_form';
+
+//timesheets
+$route['timesheets/add-timesheet'] = 'hr/personnel/add_personnel_timesheet';
+
+//bank reports
+$route['accounts/bank'] = 'accounts/payroll/bank';
+$route['accounts/generate-bank-report/(:num)'] = 'accounts/payroll/generate_bank_report/$1';
+//petty cash
+$route['accounts/petty-cash'] = 'accounts/petty_cash/index';
+$route['accounts/petty-cash/(:any)/(:any)'] = 'accounts/petty_cash/index/$1/$2';
+$route['accounts/petty-cash/(:any)'] = 'accounts/petty_cash/index/$1';
+//salary advances
+$route['salary-advance'] = 'accounts/salary_advance/index';
+$route['accounts/search-advances'] = 'accounts/salary_advance/search_salary_advance';
+$route['close-salary-advance-search'] = 'accounts/salary_advance/close_advance_search';
+$route['salary-advance/(:any)/(:any)'] = 'accounts/salary_advance/index/$1/$2';
+
+//creditors
+$route['accounts/creditors'] = 'accounts/creditors/index';
+//payroll reports routes
+$route['accounts/payroll-reports'] = 'accounts/payroll/payroll_report';
+$route['accounts/search-payroll-reports'] = 'accounts/payroll/search_payroll_reports';
+
+//import overtime-hours
+$route['import/overtime'] = 'accounts/payroll/import_overtime';
+$route['import/overtime-template'] = 'accounts/payroll/import_overtime_template';
+$route['import/import-overtime'] = 'accounts/payroll/do_overtime_import';
+
+//send payslips to the specific personnel
+$route['accounts/send-month-payslips/(:num)'] = 'accounts/payroll/send_monthly_payslips/$1';
+$route['accounts/payroll/access-payslip/(:num)/(:num)'] = 'accounts/payroll/access_payslip/$1/$2';
+
+//payslips per duration
+$route['my-account/payslips'] = 'accounts/payroll/generate_duration_payslips';
+$route['accounts/generate-personnel-payslips-duration'] = 'accounts/payroll/generate_personnel_payslip_for_duration';
+
 
 //Always comes last
 $route['accounts/payroll/(:any)/(:any)'] = 'accounts/payroll/payrolls/$1/$2';
@@ -553,6 +640,11 @@ $route['messaging/import-messages'] = 'messaging/import_messages';
 
 $route['messaging/send-messages'] = 'messaging/send_messages';
 
+$route['messaging/emails'] = 'messaging/emails';
+$route['messaging/emails/(:num)'] = 'messaging/emails/$1';
+$route['messaging/sms'] = 'messaging/sms';
+$route['messaging/sms/(:num)'] = 'messaging/sms/$1';
+
 
 /*
 *	Land Owners Routes
@@ -589,12 +681,16 @@ $route['water-management/property-readings'] = 'water_management/index';
 $route['import-water-readings-template'] = 'water_management/import_water_readings_template';
 $route['import-water-readings'] = 'water_management/do_water_readings_import';
 $route['print-water-readings/(:any)'] = 'water_management/print_water_readings/$1';
+$route['add-property-readings'] = 'water_management/add_property_invoice';
+$route['delete-property-invoices/(:num)'] = 'water_management/delete_property_invoice/$1';
 
+
+$route['rental-units/(:num)'] = 'real_estate_administration/rental_unit/index/$1';
 $route['rental-units/(:num)'] = 'real_estate_administration/rental_unit/index/$1';
 $route['rental-units/(:any)/(:any)/(:num)'] = 'real_estate_administration/rental_unit/index/$1/$2/$3';
 $route['rental-units/(:any)/(:any)'] = 'real_estate_administration/rental_unit/index/$1/$2';
 $route['add-unit'] = 'real_estate_administration/rental_unit/add_unit';
-$route['add-rental-unit/(:num)'] = 'real_estate_administration/rental_unit/add_rental_unit/$1';
+$route['edit-rental-unit/(:num)'] = 'real_estate_administration/rental_unit/edit_rental_unit/$1';
 $route['edit-rental-unit/(:num)/(:num)'] = 'real_estate_administration/rental_unit/edit_rental_unit/$1/$2';
 $route['real-estate-administration/delete-unit/(:num)'] = 'real_estate_administration/rental_unit/delete_unit/$1';
 $route['real-estate-administration/delete-unit/(:num)/(:num)'] = 'real_estate_administration/rental_unit/delete_unit/$1/$2';
@@ -605,14 +701,11 @@ $route['deactivate--rental-unit/(:num)/(:num)'] = 'real_estate_administration/re
 $route['rental-management/rental-units'] = 'real_estate_administration/rental_unit/rental_units';
 $route['rental-management/rental-units/(:num)'] = 'real_estate_administration/rental_unit/rental_units/$1';
 $route['add-rental-unit'] = 'real_estate_administration/rental_unit/add_rental_unit';
+
 $route['search-rental-units'] = 'real_estate_administration/rental_unit/search_rental_units';
 $route['close_search_rental_units'] = 'real_estate_administration/rental_unit/close_tenants_search';
-$route['sub-units/(:num)'] = 'real_estate_administration/sub_units/index/$1';
-$route['add-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/add_units/$1/$2';
-$route['edit-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/edit_units/$1/$2';
-$route['deactivate-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/deactivate_units/$1/$2';
-$route['activate-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/activate_units/$1/$2';
-$route['delete-sub-unit/(:num)/(:num)'] = 'real_estate_administration/sub_units/delete_units/$1/$2';
+
+
 
 $route['tenants'] = 'real_estate_administration/tenants/index';
 $route['tenants/(:num)'] = 'real_estate_administration/tenants/all_tenants/$1';
@@ -647,18 +740,31 @@ $route['lease-management/leases'] = 'real_estate_administration/leases/index';
 // cash office
 
 $route['cash-office/accounts'] = 'accounts/index';
+$route['cash-office/accounts/(:num)'] = 'accounts/index/$1';
+$route['cash-office/accounts/(:num)/(:num)'] = 'accounts/index/$1/$2';
 $route['search-accounts'] = 'accounts/search_accounts';
+$route['search-owners-home'] = 'accounts/search_home_owners';
+
+
 $route['close_search_accounts'] = 'accounts/close_accounts_search';
 $route['cash-office/payments/(:num)/(:num)'] = 'accounts/payments/$1/$2';
+$route['owners-payments/(:num)/(:num)'] = 'accounts/owners_payments/$1/$2';
 
 $route['reports/all-transactions'] = 'administration/reports/all_transactions';
 $route['reports/list-of-debtors'] = 'administration/reports/all_defaulters';
+$route['reports/list-of-debtors/(:num)'] = 'administration/reports/all_defaulters/$1';
+$route['reports/list-of-debtors-owners'] = 'administration/reports/all_defaulters_owners';
+$route['reports/list-of-debtors-owners/(:num)'] = 'administration/reports/all_defaulters_owners/$1';
+
 $route['export-defaulters'] = 'administration/reports/export_defaulters';
+$route['export-defaulters-owners'] = 'administration/reports/export_defaulters_owners';
 $route['export-transactions'] = 'administration/reports/export_transactions';
 
 $route['search-transactions/(:any)'] = 'administration/reports/search_transactions/$1';
 $route['search-defaulters'] = 'administration/reports/search_defaulters';
-
+$route['search-defaulters-owners'] = 'administration/reports/search_defaulters_owners';
+$route['reports/income-and-expense'] = 'administration/reports/income_and_expense';
+$route['reports/income-and-expense/(:any)/(:num)'] = 'administration/reports/income_and_expense/$1/$2';
 
 
 
@@ -675,31 +781,102 @@ $route['activate-points-category/(:num)/(:num)'] = 'real_estate_administration/p
 $route['deactivate-points-category/(:num)'] = 'real_estate_administration/points_category/deactivate_points_category/$1';
 $route['deactivate-points-category/(:num)/(:num)'] = 'real_estate_administration/points_category/deactivate_points_category/$1/$2';
 
-/*
-*	Site Routes
-*/
 
-$route['home'] = 'site/home_page';
-$route['properties'] = 'site/property';
-$route['properties/(:num)'] = 'site/property/$1';
-$route['properties/for-sale'] = 'site/property_onsale';
-$route['properties/for-sale/(:num)'] = 'site/property_onsale/$1';
-$route['properties/sold'] = 'site/property_sold';
-$route['properties/sold/(:num)'] = 'site/property_sold/$1';
-$route['properties/view-single/(:num)'] = 'site/property_detail/$1';
-$route['print-brochure/(:num)'] = 'site/brochure/$1';
-$route['request'] = 'site/contact';
-$route['development'] = 'site/development';
-$route['contact'] = 'site/contact';
-$route['news'] = 'site/blog';
-$route['news/(:num)'] = 'site/blog/$1';
-$route['news/view-single/(:num)'] = 'site/blog_detail/$1';
-$route['about'] = 'site/about';
-$route['service/(:num)'] = 'site/service/$1';
-$route['search-properties'] = 'site/search_properties/1';
-$route['search-properties-sold'] = 'site/search_properties/2';
-$route['close-search'] = 'site/close_property_search';
-$route['request-news-letter'] = 'site/request_newsletter';
-$route['send-message'] = 'site/contact_us';
-$route['request-an-appraisal'] = 'site/request_appraisal';
-$route['blog/add-comment/(:num)'] = 'site/add_blog_comment/$1';
+$route['import/tenants'] = 'real_estate_administration/tenants/import_tenants';
+$route['import/tenants-template'] = 'real_estate_administration/tenants/tenants_import_template';
+$route['import/import-tenants'] = 'real_estate_administration/tenants/tenants_import';
+
+
+$route['import/tenant-units'] = 'real_estate_administration/leases/import_tenant_units';
+$route['import/tenants-units-template'] = 'real_estate_administration/leases/tenant_units_import_template';
+$route['import/import-tenants-units'] = 'real_estate_administration/leases/tenant_units_import';
+
+
+$route['import/home-owners'] = 'real_estate_administration/leases/import_home_owners';
+$route['import/home-owners-template'] = 'real_estate_administration/leases/home_owners_import_template';
+$route['import/import-home-owners'] = 'real_estate_administration/leases/home_owners_import';
+
+
+
+
+$route['import/payments'] = 'accounts/import_payments';
+$route['import/payments-template'] = 'accounts/payments_import_template';
+$route['import/import-payments'] = 'accounts/payments_import';
+$route['import/update-payment-item/(:num)'] = 'accounts/update_payment_item/$1';
+
+$route['send-arrears/(:num)'] = 'accounts/send_arrears/$1';
+$route['send-water-invoices/(:num)'] = 'water_management/send_invoices/$1';
+$route['cash-office/print-receipt/(:num)/(:num)/(:num)'] = 'accounts/print_receipt/$1/$2/$3';
+$route['cash-office/print-owners-receipt/(:num)/(:num)/(:num)'] = 'accounts/print_owners_receipt/$1/$2/$3';
+$route['lease-statement/(:num)'] = 'accounts/print_lease_statement/$1';
+$route['lease-invoices/(:num)'] = 'accounts/lease_invoices/$1';
+$route['lease-invoices/(:num)/(:num)'] = 'accounts/lease_invoices/$1/$2';
+$route['lease-payments/(:num)'] = 'accounts/lease_payments/$1';
+$route['lease-payments/(:num)/(:num)'] = 'accounts/lease_payments/$1/$2';
+$route['invoice/(:num)/(:any)/(:num)'] = 'accounts/print_invoice/$1/$2/$3';
+$route['edit-invoice/(:num)/(:any)/(:num)'] = 'accounts/edit_invoice/$1/$2/$3';
+$route['owners-invoice/(:num)/(:num)/(:any)/(:num)'] = 'accounts/print_owners_invoice/$1/$2/$3/$4';
+$route['cash-office/send-sms/(:num)/(:num)/(:num)/(:any)/(:any)'] = 'accounts/send_sms/$1/$2/$3/$4/$5';
+
+$route['send-owners-receipt/(:num)/(:num)/(:num)'] = 'accounts/send_owners_receipt/$1/$2/$3';
+
+// beeee
+
+$route['cash-office/owners'] = 'accounts/owners';
+$route['cash-office/owners/(:num)'] = 'accounts/owners/$1';
+$route['cash-office/owners/(:num)/(:num)'] = 'accounts/owners/$1/$2';
+$route['search-owners'] = 'accounts/search_owners';
+$route['close_search_owners'] = 'accounts/close_owners_search';
+$route['cash-office/payments/(:num)/(:num)'] = 'accounts/payments/$1/$2';
+$route['send-owners/(:num)/(:num)'] = 'accounts/send_owners/$1/$2';
+
+
+
+$route['invoices-&-payments/tenants-invoices'] = 'accounts/tenants_invoices';
+$route['invoices-&-payments/tenants-invoices/(:num)'] = 'accounts/tenants_invoices/$1';
+
+$route['invoices-&-payments/tenants-payments'] = 'accounts/tenants_payments';
+$route['invoices-&-payments/tenants-payments/(:num)'] = 'accounts/tenants_payments/$1';
+
+
+$route['property-billing/(:num)'] = 'real_estate_administration/property/property_billing/$1';
+$route['property-billing/(:num)/(:num)'] = 'real_estate_administration/property/property_billing/$1/$2';
+
+$route['add-biliing/(:num)'] = 'real_estate_administration/property/add_billing/$1';
+$route['add-biliing/(:num)/(:num)'] = 'real_estate_administration/property/add_billing/$1/$2';
+
+
+
+$route['property-invoicing/(:num)'] = 'real_estate_administration/property/property_invoicing/$1';
+$route['property-invoicing/(:num)/(:num)'] = 'real_estate_administration/property/property_invoicing/$1/$2';
+
+$route['add-invoice-structure/(:num)'] = 'real_estate_administration/property/add_property_invoicing/$1';
+$route['add-invoice-structure/(:num)/(:num)'] = 'real_estate_administration/property/add_property_invoicing/$1/$2';
+
+
+
+$route['rental-management/home-owners'] = 'real_estate_administration/home_owners/all_home_owners';
+$route['rental-management/home-owners/(:num)'] = 'real_estate_administration/home_owners/all_home_owners/$1';
+$route['home-owners/(:num)'] = 'real_estate_administration/home_owners/index/$1';
+$route['activate-home-owner/(:num)'] = 'real_estate_administration/home_owners/activate_home_owner/$1';
+$route['deactivate-home-owner/(:num)'] = 'real_estate_administration/home_owners/deactivate_home_owner/$1';
+$route['edit-home-owner/(:num)'] = 'real_estate_administration/home_owners/edit_home_owner/$1';
+$route['home-owners/(:num)/(:num)'] = 'real_estate_administration/home_owners/index/$1/$2';
+$route['home-owners/(:any)/(:any)/(:num)'] = 'real_estate_administration/home_owners/index/$1/$2/$3';
+$route['home-owners/(:any)/(:any)'] = 'real_estate_administration/home_owners/index/$1/$2';
+
+$route['add-home-owner'] = 'real_estate_administration/home_owners/add_home_owner';
+$route['add-home-owner/(:num)'] = 'real_estate_administration/home_owners/add_home_owner/$1';
+$route['add-home-owner-unit/(:num)'] = 'real_estate_administration/home_owners/allocate_home_owner_to_unit/$1';
+$route['search-home-owners'] = 'real_estate_administration/home_owners/search_home_owners';
+$route['close_search_home_owners'] = 'real_estate_administration/home_owners/close_home_owners_search';
+
+
+$route['update-tenant-invoice/(:num)/(:num)/(:any)/(:num)/(:num)'] = 'accounts/update_account_invoice/$1/$2/$3/$4/$5';
+$route['update-tenant-payment/(:num)/(:num)/(:num)'] = 'accounts/update_account_payment/$1/$2/$3';
+$route['update-payment-detail/(:num)/(:num)'] = 'accounts/update_payment_detail/$1/$2';
+
+
+$route['send-tenants-receipt/(:num)/(:num)/(:num)'] = 'accounts/send_tenants_receipt/$1/$2/$3';
+
+$route['sync-mpesa-payment'] = 'accounts/sync/sync_payments';

@@ -14,8 +14,9 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th><a>Rental Unit Name</a></th>
 						<th><a>Property Name</a></th>
+						<th><a>Rental Unit Name</a></th>
+						<th><a>Unit Name</a></th>
 						<th><a>Status</a></th>
 						<th><a>Tenancy Status</a></th>
 						<th colspan="5">Actions</th>
@@ -30,6 +31,7 @@
 			{
 				$rental_unit_id = $row->rental_unit_id;
 				$rental_unit_name = $row->rental_unit_name;
+				$units_name = $row->units_name;
 				$property_name = $row->property_name;
 				$rental_unit_price = $row->rental_unit_price;
 				$created = $row->created;
@@ -79,8 +81,9 @@
 				'
 					<tr>
 						<td>'.$count.'</td>
-						<td>'.$rental_unit_name.'</td>
 						<td>'.$property_name.'</td>
+						<td>'.$rental_unit_name.'</td>
+						<td>'.$units_name.'</td>
 						<td>'.$status.'</td>
 						<td>'.$tenancy_status.'</td>
 						<td><a  class="btn btn-sm btn-primary" ><i class="fa fa-folder"></i> Rental unit Detail</a></td>

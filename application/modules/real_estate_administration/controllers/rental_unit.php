@@ -681,5 +681,77 @@ class Rental_unit extends admin {
 		
 		redirect('edit-rental-unit/'.$rental_unit_id.'/'.$property_id);
 	}
+	public function rental_units()
+	{
+		$where = 'units.rental_unit_id = rental_unit.rental_unit_id AND property.property_id = rental_unit.property_id ';
+		$table = 'rental_unit,property, units';
+
+		$rental_unit_search = $this->session->userdata('all_rental_unit_search');
+		
+		if(!empty($rental_unit_search))
+		{
+			$where .= $rental_unit_search;	
+			
+		}
+		$segment = 4;
+		//pagination
+		$this->load->library('pagination');
+		$config['base_url'] = base_url().'rental-management/rental-units';
+		$config['total_rows'] = $this->users_model->count_items($table, $where);
+		$config['uri_segment'] = $segment;
+		$config['per_page'] = 20;
+		$config['num_links'] = 5;
+		
+		$config['full_tag_open'] = '<ul class="pagination pull-right">';
+		$config['full_tag_close'] = '</ul>';
+		
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		
+		$config['next_tag_open'] = '<li>';
+		$config['next_link'] = 'Next';
+		$config['next_tag_close'] = '</span>';
+		
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_link'] = 'Prev';
+		$config['prev_tag_close'] = '</li>';
+		
+		$config['cur_tag_open'] = '<li class="active"><a href="#">';
+		$config['cur_tag_close'] = '</a></li>';
+		
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$this->pagination->initialize($config);
+		
+		$page = ($this->uri->segment($segment)) ? $this->uri->segment($segment) : 0;
+        $data["links"] = $this->pagination->create_links();
+		$query = $this->rental_unit_model->get_all_rental_units($table, $where, $config["per_page"], $page);
+
+		$properties = $this->property_model->get_active_property();
+		$rs8 = $properties->result();
+		$property_list = '';
+		foreach ($rs8 as $property_rs) :
+			$property_id = $property_rs->property_id;
+			$property_name = $property_rs->property_name;
+			$property_location = $property_rs->property_location;
+
+		    $property_list .="<option value='".$property_id."'>".$property_name." Location: ".$property_location."</option>";
+
+		endforeach;
+
+		
+		$v_data['query'] = $query;
+		$v_data['page'] = $page;
+		$v_data['property_list'] = $property_list;
+		$v_data['title'] = 'Rental units';			
+		$data['content'] = $this->load->view('rental_unit/rental_units', $v_data, true);
+		
+		$data['title'] = 'All rental unit';
+		
+		$this->load->view('admin/templates/general_page', $data);
+	}
 }
 ?>

@@ -28,9 +28,8 @@ class leases extends admin {
 	*/
 	public function index() 
 	{
-		
-		$where = 'leases.lease_id > 0 AND leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id ';
-		$table = 'leases,rental_unit,tenant_unit,tenants,property';
+		$where = 'leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.units_id = units.units_id AND units.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id ';
+		$table = 'leases,rental_unit,tenant_unit,tenants,property, units';
 		$segment = 4;
 		//pagination
 		$this->load->library('pagination');
@@ -79,9 +78,8 @@ class leases extends admin {
 		$this->load->view('admin/templates/general_page', $data);
 	}
 	
-	function add_lease($tenant_id,$rental_unit_id)
+	function add_lease($tenant_id, $units_id)
 	{
-		
 		$lease_error = $this->session->userdata('lease_error_message');
 		
 		$this->form_validation->set_rules('lease_start_date', 'lease name', 'required|trim|xss_clean');
@@ -93,7 +91,7 @@ class leases extends admin {
 		{	
 			if(empty($lease_error))
 			{
-				if($this->leases_model->add_lease($tenant_id,$rental_unit_id))
+				if($this->leases_model->add_lease($tenant_id,$units_id))
 				{
 					$this->session->unset_userdata('lease_error_message');
 					$this->session->set_userdata('success_message', 'Lease has been added successfully');
@@ -115,7 +113,7 @@ class leases extends admin {
 		{
 			$this->session->set_userdata('error_message', 'Please fill in all the fields');
 		}
-		redirect('tenants/'.$rental_unit_id);		
+		redirect('tenants/'.$units_id);		
 	}
 	
 	function edit_lease($lease_id, $page = NULL)

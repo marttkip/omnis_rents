@@ -15,6 +15,7 @@ if ($query->num_rows() > 0)
 				<th>#</th>
 				<th><a>Lease Number</a></th>
 				<th><a>Property Name</a></th>
+				<th><a>Rental Unit Name</a></th>
 				<th><a>Unit Name</a></th>
 				<th><a>Tenant Name</a></th>
 				<th><a>Lease Status</a></th>
@@ -28,6 +29,7 @@ if ($query->num_rows() > 0)
 	
 	foreach ($query->result() as $leases_row)
 	{
+		$units_name = $leases_row->units_name;
 		$lease_id = $leases_row->lease_id;
 		$tenant_unit_id = $leases_row->tenant_unit_id;
 		$property_name = $leases_row->property_name;
@@ -76,6 +78,7 @@ if ($query->num_rows() > 0)
 				<td>'.$lease_number.'</td>
 				<td>'.$property_name.'</td>
 				<td>'.$rental_unit_name.'</td>
+				<td>'.$units_name.'</td>
 				<td>'.$tenant_name.'</td>
 				<td>'.$status.'</td>
 				<td><a  class="btn btn-sm btn-primary" id="open_lease'.$lease_id.'" onclick="get_lease_details('.$lease_id.')" ><i class="fa fa-folder"></i> View Lease Info</a>
@@ -106,7 +109,7 @@ else
 ?>  
 <section class="panel">
 		<header class="panel-heading">						
-			<h2 class="panel-title"><?php echo $title;?> <div class="pull-right" ><a href="<?php echo site_url();?>real-estate-administration/add-rental-unit" style="margin-top:-5px" class="btn btn-sm btn-info "><i class="fa fa-plus"></i> Add rental unit</a></div></h2>
+			<h2 class="panel-title"><?php echo $title;?> <div class="pull-right" ><a href="<?php echo site_url();?>real-estate-administration/add-rental-unit" style="margin-top:-5px" class="btn btn-sm btn-info "><i class="fa fa-plus"></i> Add lease</a></div></h2>
 		</header>
 		<div class="panel-body">
         	<?php

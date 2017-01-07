@@ -16,11 +16,8 @@
 						<th>#</th>
 						<th>Property Name</th>
 						<th>Rental Unit Name</th>
-						<th>Location</th>
-						<th>Date Created</th>
-						<th>Last Modified</th>
 						<th>Status</th>
-						<th colspan="5">Actions</th>
+						<th colspan="4">Actions</th>
 					</tr>
 				</thead>
 				  <tbody>
@@ -70,7 +67,6 @@
 						<td>'.$rental_unit_name.'</td>
 						<td>'.$status.'</td>
 						<td><a href="'.site_url().'sub-units/'.$rental_unit_id.'" class="btn btn-sm btn-primary" ><i class="fa fa-folder"></i> Sub Units</a></td>
-						<td><a href="'.site_url().'tenants/'.$rental_unit_id.'" class="btn btn-sm btn-warning" ><i class="fa fa-folder"></i> Tenants Detail</a></td>
 						<td><a href="'.site_url().'edit-rental-unit/'.$rental_unit_id.'/'.$property_id.'" class="btn btn-sm btn-success" title="Edit '.$rental_unit_name.'"><i class="fa fa-pencil"></i></a></td>
 						<td>'.$button.'</td>
 						<td><a href="'.site_url().'deactivate-rental-unit/'.$rental_unit_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$rental_unit_name.'?\');" title="Delete '.$rental_unit_name.'"><i class="fa fa-trash"></i></a></td>

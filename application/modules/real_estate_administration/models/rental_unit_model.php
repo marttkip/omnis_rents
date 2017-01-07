@@ -155,20 +155,20 @@ class Rental_unit_model extends CI_Model
 		return $query;
 	}
 
-	public function get_tenancy_details($rental_unit_id)
+	public function get_tenancy_details($units_id)
 	{
 		$table = "tenant_unit";
-		$where = "rental_unit_id = ".$rental_unit_id." AND tenant_unit_status = 1";
+		$where = "units_id = ".$units_id." AND tenant_unit_status = 1";
 		
 		$this->db->where($where);
 		$query = $this->db->get($table);
 		
 		return $query;
 	}
-	public function get_rental_unit_name($rental_unit_id)
+	public function get_rental_unit_name($units_id)
 	{
-		$table = "rental_unit";
-		$where = "rental_unit_id = ".$rental_unit_id;
+		$table = "rental_unit, units";
+		$where = "rental_unit.rental_unit_id = units.rental_unit_id AND units.units_id = ".$units_id;
 		
 		$this->db->where($where);
 		$query = $this->db->get($table);
@@ -177,8 +177,29 @@ class Rental_unit_model extends CI_Model
 			foreach ($query->result() as $key) {
 				# code...
 				$rental_unit_name =$key->rental_unit_name;
+				$units_name =$key->units_name;
 			}
-			return $rental_unit_name;
+			return $rental_unit_name.' '.$units_name;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	public function get_rental_unit_id($units_id)
+	{
+		$table = "units";
+		$where = "units_id = ".$units_id;
+		
+		$this->db->where($where);
+		$query = $this->db->get($table);
+		if($query->num_rows() > 0)
+		{
+			foreach ($query->result() as $key) {
+				# code...
+				$rental_unit_id =$key->rental_unit_id;
+			}
+			return $rental_unit_id;
 		}
 		else
 		{

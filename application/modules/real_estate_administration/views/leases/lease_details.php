@@ -26,9 +26,10 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 		// $expiry_date  = date('jS M Y',strtotime($lease_start_date, mktime()) . " + 365 day");
 		$expiry_date  = date('jS M Y', strtotime(''.$lease_start_date.'+1 years'));
 		
-		$total_due = $rent_amount*12;
+		//$total_due = $rent_amount*12;
+		$total_due = $rent_amount + $arreas_bf;
 
-		$total_paid = 6000;
+		$total_paid = 0;
 
 
 		//create deactivated status display
@@ -75,7 +76,8 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 									  		<tr><td><span>Lease Number :</span></td><td><?php echo $lease_number;?></td></tr>
 									  		<tr><td><span>Lease Start date :</span></td><td><?php echo $lease_start_date;?></td></tr>
 									  		<tr><td><span>Lease Expiry date :</span></td><td><?php echo $expiry_date;?></td></tr>
-									  		<tr><td><span>Rent amount :</span></td><td><?php echo $rent_amount;?></td></tr>
+									  		<tr><td><span>Rent amount :</span></td><td><?php echo number_format($rent_amount);?></td></tr>
+									  		<tr><td><span>Arreas BF :</span></td><td><?php echo number_format($arreas_bf);?></td></tr>
 									  		<tr><td><span>Lease Status :</span></td><td><?php echo $status;?></td></tr>
 
 									  		

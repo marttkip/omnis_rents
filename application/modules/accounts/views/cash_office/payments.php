@@ -1,11 +1,12 @@
 <?php
-$all_leases = $this->leases_model->get_lease_detail($lease_id);
+	$all_leases = $this->leases_model->get_lease_detail($lease_id);
 	foreach ($all_leases->result() as $leases_row)
 	{
 		$lease_id = $leases_row->lease_id;
 		$tenant_unit_id = $leases_row->tenant_unit_id;
 		$property_name = $leases_row->property_name;
 		$rental_unit_name = $leases_row->rental_unit_name;
+		$units_name = $leases_row->units_name;
 		$tenant_name = $leases_row->tenant_name;
 		$lease_start_date = $leases_row->lease_start_date;
 		$lease_duration = $leases_row->lease_duration;
@@ -26,9 +27,6 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 		// $expiry_date  = date('jS M Y',strtotime($lease_start_date, mktime()) . " + 365 day");
 		$expiry_date  = date('jS M Y', strtotime(''.$lease_start_date.'+1 years'));
 		
-		
-
-
 		//create deactivated status display
 		if($lease_status == 0)
 		{
@@ -126,7 +124,7 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 									  		<tr><td><span>Tenant Phone :</span></td><td><?php echo $tenant_phone_number;?></td></tr>
 									  		<tr><td><span>Tenant National Id :</span></td><td><?php echo $tenant_national_id;?></td></tr>
 									  		<tr><td><span>Property Name :</span></td><td><?php echo $property_name;?></td></tr>
-									  		<tr><td><span>Unit Name :</span></td><td><?php echo $rental_unit_name;?></td></tr>
+									  		<tr><td><span>Unit Name :</span></td><td><?php echo $rental_unit_name;?> - Hse No.<?php echo $units_name;?></td></tr>
 									  		<tr><td><span>Account Status :</span></td><td><?php echo $status_tenant;?></td></tr>
 									  		
 									  	</tbody>
@@ -223,13 +221,13 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 												<input type="text" class="form-control" name="bank_name" placeholder="Barclays">
 											</div>
 										</div>
-										<div class="form-group">
+										<!--<div class="form-group">
 											<label class="col-md-4 control-label">Receipt Number: </label>
 										  
 											<div class="col-md-7">
 												<input type="text" class="form-control" name="receipt_number" placeholder="" autocomplete="off" required>
 											</div>
-										</div>
+										</div>-->
 										
 
 										<div class="form-group">
@@ -297,6 +295,7 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 									<th>Paid By</th>
 									<th>Receipted Date</th>
 									<th>Receipted By</th>
+									<th colspan="2">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -306,16 +305,18 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 									$y = 0;
 									foreach ($lease_payments->result() as $key) {
 										# code...
+										$payment_id = $key->payment_id;
 										$receipt_number = $key->receipt_number;
 										$amount_paid = $key->amount_paid;
 										$paid_by = $key->paid_by;
 										$payment_date = $key->payment_date;
 										$payment_created = $key->payment_created;
 										$payment_created_by = $key->payment_created_by;
-
+										
 										$payment_date = date('jS M Y',strtotime($payment_date));
 										$payment_created = date('jS M Y',strtotime($payment_created));
 										$y++;
+										$message = $this->site_model->create_web_name('Your rent payment of Ksh. '.number_format($amount_paid, 0).' has been received for Hse No. '.$units_name);
 										?>
 										<tr>
 											<td><?php echo $y?></td>
@@ -325,6 +326,8 @@ $all_leases = $this->leases_model->get_lease_detail($lease_id);
 											<td><?php echo $paid_by;?></td>
 											<td><?php echo $payment_created;?></td>
 											<td><?php echo $payment_created_by;?></td>
+                                            <td><a href="<?php echo site_url().'cash-office/print-receipt/'.$payment_id.'/'.$tenant_unit_id.'/'.$lease_id;?>" class="btn btn-sm btn-primary" target="_blank">Receipt</a></td>
+                                            <td><a href="<?php echo site_url().'cash-office/send-sms/'.$payment_id.'/'.$tenant_unit_id.'/'.$lease_id.'/'.$tenant_phone_number.'/'.$message;?>" class="btn btn-sm btn-success">Send SMS</a></td>
 										</tr>
 										<?php
 

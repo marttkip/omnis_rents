@@ -139,6 +139,7 @@
 						</td>
 						<td><a href="'.site_url().'edit-sub-unit/'.$rental_unit_id.'/'.$units_id.'" class="btn btn-sm btn-success" title="Edit '.$units_name.'"><i class="fa fa-pencil"></i></a></td>
 						<td>'.$button.'</td>
+						<td><a href="'.site_url().'tenants/'.$units_id.'" class="btn btn-sm btn-warning" ><i class="fa fa-folder"></i> Tenants Detail</a></td>
 						<td><a href="'.site_url().'delete-sub-unit/'.$units_id.'/'.$rental_unit_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$units_name.'?\');" title="Delete '.$units_name.'"><i class="fa fa-trash"></i></a></td>
 					</tr> 
 				';

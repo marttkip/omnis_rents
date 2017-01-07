@@ -1480,4 +1480,25 @@ class Reports_model extends CI_Model
 		
 		return $query;
 	}
+	
+	public function calculate_debt($status)
+	{
+		$this->db->select('SUM(amount_paid) AS total');
+		$this->db->where('leases.lease_status = '.$status.' AND leases.lease_id = payments.lease_id');
+		$query = $this->db->get('leases, payments');
+		
+		$total = 0;
+		if($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			$total = $row->total;
+			
+			if(empty($total))
+			{
+				$total = 0;
+			}
+		}
+		
+		return $total;
+	}
 }

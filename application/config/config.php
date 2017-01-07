@@ -17,7 +17,7 @@
 |
 */
 $config['base_url'] = 'http://localhost/omnis_rents/';
-$config['base_url'] = 'https://www.omnis.co.ke/real_estate/';
+#$config['base_url'] = 'https://www.omnis.co.ke/real_estate/';
 
 /*
 |--------------------------------------------------------------------------

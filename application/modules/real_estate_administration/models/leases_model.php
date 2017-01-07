@@ -37,29 +37,29 @@ class Leases_model extends CI_Model
 		return $query;
 	}
 	
-	public function add_lease($tenant_id,$rental_unit_id)
+	public function add_lease($tenant_id,$units_id)
 	{
 		// check if the tenant has been allocated a unit
-		$checker = $this->check_tenant_unit_account($tenant_id,$rental_unit_id);
+		$checker = $this->check_tenant_unit_account($tenant_id,$units_id);
 
 		if($checker > 0)
 		{
 			$update_array = array('lease_status'=>0);
-			$this->db->where('rental_unit_id = '.$rental_unit_id);
+			$this->db->where('units_id = '.$units_id);
 			$this->db->update('leases',$update_array);
 			// means that the item has been successfully inserted
 			$data = array(
 				'lease_start_date'=>$this->input->post('lease_start_date'),
 				'lease_duration'=>$this->input->post('lease_duration'),
-				'lease_number'=>$this->create_lease_number($rental_unit_id),
+				'lease_number'=>$this->create_lease_number($units_id),
 				'rent_amount'=>$this->input->post('rent_amount'),
-				'arrears_bf'=>$this->input->post('arrears_bf'),
+				'arreas_bf'=>$this->input->post('arrears_bf'),
 				'deposit'=>$this->input->post('deposit_amount'),
 				'deposit_ext'=>$this->input->post('deposit_ext'),
 				'tenant_unit_id'=>$checker,
 				'created'=>date('Y-m-d H:i:s'),
 				'lease_status'=>1,
-				'rental_unit_id'=>$rental_unit_id,
+				'units_id'=>$units_id,
 				'created_by'=>$this->session->userdata('personnel_id'),
 				'branch_code'=>$this->session->userdata('branch_code')
 			);
@@ -78,9 +78,9 @@ class Leases_model extends CI_Model
 		}
 		
 	}
-	public function check_tenant_unit_account($tenant_id,$rental_unit_id)
+	public function check_tenant_unit_account($tenant_id,$units_id)
 	{
-		$this->db->where('tenant_id = '.$tenant_id.' AND rental_unit_id = '.$rental_unit_id.' AND tenant_unit_status = 1');
+		$this->db->where('tenant_id = '.$tenant_id.' AND units_id = '.$units_id.' AND tenant_unit_status = 1');
 		$this->db->from('tenant_unit');
 		$this->db->select('*');
 		$query = $this->db->get();
@@ -101,11 +101,11 @@ class Leases_model extends CI_Model
 			// create the tenant unit number
 			$insert_array = array(
 							'tenant_id'=>$tenant_id,
-							'rental_unit_id'=>$rental_unit_id,
+							'units_id'=>$units_id,
 							'created'=>date('Y-m-d'),
 							'created_by'=>$this->session->userdata('personnel_id'),
 							'tenant_unit_status'=>1,
-							);
+						);
 			$this->db->insert('tenant_unit',$insert_array);
 			$tenant_unit_id = $this->db->insert_id();
 
@@ -113,30 +113,33 @@ class Leases_model extends CI_Model
 		}
 	}
 
-	public function create_lease_number($rental_unit_id)
+	public function create_lease_number($units_id)
 	{
-		//select product code
-		$this->db->where('branch_code = "'.$this->session->userdata('branch_code').'" AND rental_unit_id ='.$rental_unit_id);
+		//get property id
+		$this->db->where('branch_code = "'.$this->session->userdata('branch_code').'"');
 		$this->db->from('leases');
 		$this->db->select('MAX(lease_number) AS number');
 		$query = $this->db->get();
+		$preffix = $this->session->userdata('branch_code');
+		$preffix_digits = strlen($preffix);
+		$number = NULL;
+		
 		if($query->num_rows() > 0)
 		{
-			$result = $query->result();
-			$number =  $result[0]->number;
-			$number++;//go to the next number
-			if($number == 1){
-				$number = "".$this->session->userdata('branch_code')."-0001";
-			}
+			$result = $query->row();
 			
-			if($number == 1)
+			$number = $result->number;
+			if(($number != NULL) && ($number != 1))
 			{
-				$number = "".$this->session->userdata('branch_code')."-0001";
+				$real_number = substr($number, $preffix_digits);
+				$real_number++;//go to the next number
+				$number = $preffix.sprintf('%03d', $real_number);
 			}
-			
-		}
-		else{//start generating receipt numbers
-			$number = "".$this->session->userdata('branch_code')."-0001";
+			else
+			{
+				//start generating receipt numbers
+				$number = $preffix.sprintf('%03d', 1);
+			}
 		}
 		return $number;
 	}
@@ -313,9 +316,32 @@ class Leases_model extends CI_Model
 	public function get_lease_detail($lease_id)
 	{
 		//retrieve all leases
-		$this->db->from('leases,rental_unit,tenant_unit,tenants,property');
+		$where = 'leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.units_id = units.units_id AND units.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id AND lease_id = '.$lease_id;
+		$table = 'leases,rental_unit,tenant_unit,tenants,property, units';
+		$this->db->from($table);
 		$this->db->select('*');
-		$this->db->where('leases.lease_id > 0 AND leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id AND lease_id = '.$lease_id);
+		$this->db->where($where);
+		$query = $this->db->get();
+		
+		return $query;
+	}
+
+	
+
+/*
+	*	Retrieve a single lease
+	*	@param int $lease_id
+	*
+	*/
+	public function get_active_lease_detail()
+	{
+		//retrieve all leases
+		$where = 'leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = tenants.tenant_id AND tenant_unit.units_id = units.units_id AND units.rental_unit_id = rental_unit.rental_unit_id AND rental_unit.property_id = property.property_id AND leases.lease_status = 1';
+		$table = 'leases,rental_unit,tenant_unit,tenants,property, units';
+		$this->db->from($table);
+		$this->db->select('*');
+		$this->db->where($where);
+		$this->db->order_by('units_name');
 		$query = $this->db->get();
 		
 		return $query;
@@ -406,11 +432,11 @@ class Leases_model extends CI_Model
 		return $web_name;
 	}
 
-	public function get_tenant_unit_leases($tenant_id,$rental_unit_id)
+	public function get_tenant_unit_leases($tenant_id,$units_id)
 	{
 		$this->db->from('leases,tenant_unit');
 		$this->db->select('*');
-		$this->db->where('leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = '.$tenant_id.' AND tenant_unit.rental_unit_id ='.$rental_unit_id);
+		$this->db->where('leases.tenant_unit_id = tenant_unit.tenant_unit_id AND tenant_unit.tenant_id = '.$tenant_id.' AND tenant_unit.units_id ='.$units_id);
 		$this->db->order_by('leases.lease_id','DESC');
 		$query = $this->db->get();
 		

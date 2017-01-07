@@ -213,6 +213,11 @@ class Messaging_model extends CI_Model
 		// max of 160 characters
 		// to get a unique name make payment of 8700 to Africastalking/SMSLeopard
 		// unique name should have a maximum of 11 characters
+		if (substr($phone, 0, 1) === '0') 
+		{
+			$phone = ltrim($phone, '0');
+		}
+		
 		$phone_number = '+254'.$phone;
 		// get items 
 
@@ -241,27 +246,30 @@ class Messaging_model extends CI_Model
 
 	    }
 
-	    $actual_message = $message.' '.$sms_suffix;
+	    //$actual_message = $message.' '.$sms_suffix;
+		$actual_message = $message;
 	    // var_dump($actual_message); die();
 		// get the current branch code
         $params = array('username' => $sms_user, 'apiKey' => $sms_key);  
-
-        $this->load->library('AfricasTalkingGateway', $params);
+		
+        $this->load->library('africastalkinggateway', $params);
 		// var_dump($params)or die();
         // Send the message
 		try 
 		{
-        	$results = $this->africastalkinggateway->sendMessage($phone_number, $actual_message, $sms_from);
+			$results = $this->africastalkinggateway->sendMessage($phone_number, $actual_message);
 			
 			//var_dump($results);die();
+			$status = '';
 			foreach($results as $result) {
 				// status is either "Success" or "error message"
 				// echo " Number: " .$result->number;
 				// echo " Status: " .$result->status;
 				// echo " MessageId: " .$result->messageId;
 				// echo " Cost: "   .$result->cost."\n";
+				$status = $result->status;
 			}
-			return $result->status;
+			return $status;
 
 		}
 		
@@ -271,5 +279,4 @@ class Messaging_model extends CI_Model
 			return FALSE;
 		}
     }
-	
 }

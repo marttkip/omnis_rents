@@ -17,31 +17,31 @@ class Tenants extends property {
 	*	Default action is to show all the tenants
 	*
 	*/
-	public function index($rental_unit_id = NULL,$pager = NULL) 
+	public function index($units_id = NULL,$pager = NULL) 
 	{
 		
-		if($rental_unit_id == NULL || $rental_unit_id == 0)
+		if($units_id == NULL || $units_id == 0)
 		{
 			$where = 'tenant_id > 0';
 			$table = 'tenants';
-			$addition = '/'.$rental_unit_id.'/'.$pager;
+			$addition = '/'.$units_id.'/'.$pager;
 			$segment = 5;
 		}
 		else
 		{
 			if($pager == NULL)
 			{
-				$addition = '/'.$rental_unit_id;
+				$addition = '/'.$units_id;
 				$segment = 4;
 			}
 			else
 			{
-				$addition = '/'.$rental_unit_id.'/'.$pager;
+				$addition = '/'.$units_id.'/'.$pager;
 				$segment = 5;
 			}
 			
-			 $where = 'tenants.tenant_id > 0 AND tenants.tenant_id = tenant_unit.tenant_id AND tenant_unit.rental_unit_id = rental_unit.rental_unit_id  AND tenant_unit.rental_unit_id ='.$rental_unit_id;
-			$table = 'tenants,tenant_unit,rental_unit';
+			 $where = 'tenants.tenant_id = tenant_unit.tenant_id AND tenant_unit.units_id = units.units_id AND units.rental_unit_id = rental_unit.rental_unit_id AND tenant_unit.units_id ='.$units_id;
+			$table = 'tenants, tenant_unit, rental_unit, units';
 		}
 		
 		$tenants_search = $this->session->userdata('all_tenants_search');
@@ -109,9 +109,9 @@ class Tenants extends property {
 		$v_data['tenants_list'] = $tenants_list;
 		$v_data['pager'] = $pager;
 
-		if($rental_unit_id != NULL AND $rental_unit_id != 0)
+		if($units_id != NULL AND $units_id != 0)
 		{
-			$rental_unit_name = $this->rental_unit_model->get_rental_unit_name($rental_unit_id);
+			$rental_unit_name = $this->rental_unit_model->get_rental_unit_name($units_id);
 			$data['title'] = $rental_unit_name.'\'s Tenants';
 			$v_data['title'] = $data['title'];
 		}
@@ -121,7 +121,8 @@ class Tenants extends property {
 			$v_data['title'] = $data['title'];
 		}		
 		
-		$v_data['rental_unit_id'] = $rental_unit_id;
+		$v_data['rental_unit_id'] = $this->rental_unit_model->get_rental_unit_id($units_id);
+		$v_data['units_id'] = $units_id;
 		$v_data['tenants'] = $query;
 		$v_data['page'] = $page;
 		$data['content'] = $this->load->view('tenants/all_tenants', $v_data, true);
@@ -131,8 +132,6 @@ class Tenants extends property {
 
 	public function all_tenants()
 	{
-
-			
 		$where = 'tenant_id > 0';
 		$table = 'tenants';
 	
@@ -200,13 +199,11 @@ class Tenants extends property {
 		endforeach;
 
 		$v_data['tenants_list'] = $tenants_list;
-
 		
-			$data['title'] = 'All Tenants';
-			$v_data['title'] = $data['title'];
-			
+		$data['title'] = 'All Tenants';
+		$v_data['title'] = $data['title'];
 		
-		$v_data['rental_unit_id'] = NULL;
+		$v_data['units_id'] = NULL;
 		$v_data['tenants'] = $query;
 		$v_data['page'] = $page;
 		$data['content'] = $this->load->view('tenants/all_tenants', $v_data, true);
@@ -272,7 +269,7 @@ class Tenants extends property {
 	*	Add a new tenant page
 	*
 	*/
-	public function add_tenant($rental_unit_id = NULL) 
+	public function add_tenant($units_id = NULL) 
 	{
 		//form validation rules
 		// $this->form_validation->set_rules('tenant_email', 'Email', 'xss_clean|is_unique[tenants.tenant_email]|valid_email');
@@ -289,13 +286,13 @@ class Tenants extends property {
 				$this->session->unset_userdata('tenants_error_message');
 				$this->session->set_userdata('success_message', 'Tenant has been successfully added');
 
-				if($rental_unit_id == NULL OR $rental_unit_id == 0)
+				if($units_id == NULL OR $units_id == 0)
 				{
 					redirect('rental-management/tenants');
 				}
 				else
 				{
-					redirect('rental-management/tenants/'.$rental_unit_id);
+					redirect('tenants/'.$units_id);
 				}
 
 				
@@ -304,13 +301,13 @@ class Tenants extends property {
 			else
 			{
 				$this->session->set_userdata('error_message', 'Sorry something went wrong. Please try again');
-				if($rental_unit_id == NULL OR $rental_unit_id == 0)
+				if($units_id == NULL OR $units_id == 0)
 				{
 					redirect('rental-management/tenants');
 				}
 				else
 				{
-					redirect('rental-management/tenants/'.$rental_unit_id);
+					redirect('tenants/'.$units_id);
 				}
 
 			}
@@ -318,13 +315,13 @@ class Tenants extends property {
 		
 		//open the add new tenant page
 	}
-	public function allocate_tenant_to_unit($rental_unit_id)
+	public function allocate_tenant_to_unit($units_id)
 	{
 		$this->form_validation->set_rules('tenant_id', 'Tenant id', 'required|trim|xss_clean');
 
 		if ($this->form_validation->run())
 		{	
-			if($this->tenants_model->add_tenant_to_unit($rental_unit_id))
+			if($this->tenants_model->add_tenant_to_unit($units_id))
 			{
 				$this->session->unset_userdata('lease_error_message');
 				$this->session->set_userdata('success_message', 'Tenant has been added successfully');
@@ -338,7 +335,7 @@ class Tenants extends property {
 		{
 			$this->session->set_userdata('error_message', 'Please fill in all the fields');
 		}
-		redirect('tenants/'.$rental_unit_id);	
+		redirect('tenants/'.$units_id);	
 	}
 	public function allocate_tenant_to_unit_other($rental_unit_id) 
 	{
@@ -439,19 +436,27 @@ class Tenants extends property {
 	*	@param int $tenant_id
 	*
 	*/
-	public function delete_tenant($tenant_id) 
+	public function delete_tenant($tenant_id, $units_id = NULL) 
 	{
 		if($this->tenants_model->delete_tenant($tenant_id))
 		{
-			$this->session->set_userdata('success_message', 'Administrator has been deleted');
+			$this->session->set_userdata('success_message', 'Tenant has been deleted');
 		}
 		
 		else
 		{
-			$this->session->set_userdata('error_message', 'Administrator could not be deleted');
+			$this->session->set_userdata('error_message', 'Tenant could not be deleted');
 		}
 		
-		redirect('rental-management/tenants');
+		if($units_id == NULL)
+		{
+			redirect('rental-management/tenants');
+		}
+		
+		else
+		{
+			redirect('tenants/'.$units_id);
+		}
 	}
     
 	/*

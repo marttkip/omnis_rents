@@ -26,8 +26,7 @@ if ($query->num_rows() > 0)
 				<th colspan="5">Actions</th>
 			</tr>
 		</thead>
-		  <tbody>
-		  
+		<tbody>
 	';
 	
 	
@@ -48,8 +47,6 @@ if ($query->num_rows() > 0)
 		$lease_status = $leases_row->lease_status;
 		$points = $leases_row->points;
 		$created = $leases_row->created;
-
-	
 		
 		// $expiry_date  = date('jS M Y',strtotime($lease_start_date, mktime()) . " + 365 day");
 		$expiry_date  = date('jS M Y', strtotime(''.$lease_start_date.'+1 years'));
@@ -147,7 +144,7 @@ if ($query->num_rows() > 0)
 				<td>'.number_format($current_arrears,0).'</td>
 				'.$current_items.'
 				<td>'.number_format($current_balance,0).'</td>
-				<td><a class="btn btn-sm btn-success" href="payments/'.$tenant_unit_id.'/'.$lease_id.'" > Payments</a></td>				
+				<td><a class="btn btn-sm btn-success" href="'.site_url().'cash-office/payments/'.$tenant_unit_id.'/'.$lease_id.'" > Payments</a></td>				
 				<td><a  class="btn btn-sm btn-primary" id="open_lease'.$lease_id.'" onclick="get_lease_details('.$lease_id.')" ><i class="fa fa-folder"></i> View Lease Info</a>
 					<a  class="btn btn-sm btn-warning" id="close_lease'.$lease_id.'" style="display:none;" onclick="close_lease_details('.$lease_id.')" ><i class="fa fa-folder"></i> Close Lease Info</a></td>
 				<td><a class="btn btn-sm btn-default" href="" > Send Message</a></td>	

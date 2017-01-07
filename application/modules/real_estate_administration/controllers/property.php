@@ -85,7 +85,7 @@ class Property extends admin {
 	function add_property()
 	{
 		$this->form_validation->set_rules('property_name', 'property name', 'required|xss_clean|trim|xss_clean');
-		$this->form_validation->set_rules('property_prefix', 'property name', 'required|xss_clean|is_unique[property.property_prefix]|trim|xss_clean');
+		$this->form_validation->set_rules('property_prefix', 'property prefix', 'required|xss_clean|is_unique[property.property_prefix]|trim|xss_clean');
 		$this->form_validation->set_rules('property_status', 'Property Status', 'xss_clean');
 		$this->form_validation->set_rules('location_id', 'Location', 'xss_clean');
 		$this->form_validation->set_rules('property_type_id', 'Property Type', 'xss_clean');

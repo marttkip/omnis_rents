@@ -99,48 +99,38 @@ class tenants_model extends CI_Model
 		}
 	}
 
-	public function add_tenant_to_unit($rental_unit_id)
+	public function add_tenant_to_unit($units_id)
 	{
-		$this->db->where('tenant_unit_status = 1 AND rental_unit_id = '.$rental_unit_id.'');
+		$where = 'tenant_unit_status = 1 AND units_id = '.$units_id;
+		$this->db->where($where);
 		$this->db->from('tenant_unit');
 		$this->db->select('*');
 		$query = $this->db->get();
 
 		if($query->num_rows() > 0)
 		{
-			foreach ($query->result() as $key) {
-				# code...
-				$tenant_unit_id = $key->tenant_unit_id;
-				$tenant_unit_status = $key->tenant_unit_status;
-					// update the details the status to 1 
-				$update_array = array('tenant_unit_status'=>0);
-				$this->db->where('tenant_unit_id = '.$tenant_unit_id);
-				$this->db->update('tenant_unit',$update_array);
+			$update_array = array('tenant_unit_status'=>0);
+			$this->db->where($where);
+			if($this->db->update('tenant_unit',$update_array))
+			{
 			}
-			$insert_array = array(
-							'tenant_id'=>$this->input->post('tenant_id'),
-							'rental_unit_id'=>$rental_unit_id,
-							'created'=>date('Y-m-d'),
-							'created_by'=>$this->session->userdata('personnel_id'),
-							'tenant_unit_status'=>1,
-							);
-			$this->db->insert('tenant_unit',$insert_array);
+		}
+		
+		$insert_array = array(
+						'tenant_id'=>$this->input->post('tenant_id'),
+						'units_id'=>$units_id,
+						'created'=>date('Y-m-d'),
+						'created_by'=>$this->session->userdata('personnel_id'),
+						'tenant_unit_status'=>1,
+						);
+		if($this->db->insert('tenant_unit',$insert_array))
+		{
 			return TRUE;
 		}
+		
 		else
 		{
-			// create the tenant unit number
-			$insert_array = array(
-							'tenant_id'=>$this->input->post('tenant_id'),
-							'rental_unit_id'=>$rental_unit_id,
-							'created'=>date('Y-m-d'),
-							'created_by'=>$this->session->userdata('personnel_id'),
-							'tenant_unit_status'=>1,
-							);
-			$this->db->insert('tenant_unit',$insert_array);
-			$tenant_unit_id = $this->db->insert_id();
-
-			return TRUE;
+			return FALSE;
 		}
 	}
 	public function create_tenant_number()
@@ -467,22 +457,22 @@ class tenants_model extends CI_Model
 			return FALSE;
 		}
 	}
-	public function get_tenancy_details($tenant_id,$rental_unit_id)
+	public function get_tenancy_details($tenant_id,$units_id)
 	{
 		$this->db->from('tenant_unit');
 		$this->db->select('*');
-		$this->db->where('tenant_id = '.$tenant_id.' AND rental_unit_id ='.$rental_unit_id);
+		$this->db->where('tenant_id = '.$tenant_id.' AND units_id ='.$units_id);
 		$query = $this->db->get();
 		
 		return $query;
 	}
 
-	public function check_for_account($rental_unit_id)
+	public function check_for_account($units_id)
 	{
 
 		$this->db->from('tenant_unit');
 		$this->db->select('*');
-		$this->db->where('tenant_unit_status = 1 AND rental_unit_id ='.$rental_unit_id);
+		$this->db->where('tenant_unit_status = 1 AND units_id ='.$units_id);
 		$query = $this->db->get();
 		
 		if($query->num_rows() > 0)

@@ -12,7 +12,7 @@
 // }
 
 
-$all_leases = $this->leases_model->get_tenant_unit_leases($tenant_id,$rental_unit_id);
+$all_leases = $this->leases_model->get_tenant_unit_leases($tenant_id,$units_id);
 $arrears_bf = 0;
 $result = '';
 		
@@ -75,7 +75,7 @@ if ($all_leases->num_rows() > 0)
 		{
 			$status = '<span class="label label-success">Active</span>';
 			$button = '<td><a class="btn btn-default" href="'.site_url().'deactivate-rental-unit/'.$lease_id.'" onclick="return confirm(\'Do you want to deactivate '.$lease_number.'?\');" title="Deactivate '.$lease_number.'"><i class="fa fa-thumbs-down"></i></a></td>';
-			$delete_button = '<td><a href="'.site_url().'deactivate-rental-unit/'.$rental_unit_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$lease_number.'?\');" title="Delete '.$lease_number.'"><i class="fa fa-trash"></i></a></td>';
+			$delete_button = '<td><a href="'.site_url().'deactivate-rental-unit/'.$units_id.'" class="btn btn-sm btn-danger" onclick="return confirm(\'Do you really want to delete '.$lease_number.'?\');" title="Delete '.$lease_number.'"><i class="fa fa-trash"></i></a></td>';
 
 		}
 	
@@ -142,7 +142,7 @@ else
 			}
         ?>
         
-        <?php echo form_open('create-new-lease/'.$tenant_id.'/'.$rental_unit_id, array("class" => "form-horizontal", "role" => "form"));?>
+        <?php echo form_open('create-new-lease/'.$tenant_id.'/'.$units_id, array("class" => "form-horizontal", "role" => "form"));?>
 			<div class="row">
 				<div class="col-md-4">
 			        <div class="form-group">
